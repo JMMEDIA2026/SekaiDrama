@@ -46,13 +46,12 @@ export const PLATFORMS: PlatformInfo[] = [
   //   apiBase: "/api/netshort",
   // },
 
-  // [TEMPORARILY DISABLED] Melolo - Dinonaktifkan sementara.
-  // {
-  //   id: "melolo",
-  //   name: "Melolo",
-  //   logo: "/melolo.webp",
-  //   apiBase: "/api/melolo",
-  // },
+  {
+    id: "melolo",
+    name: "Melolo",
+    logo: "/melolo.webp",
+    apiBase: "/api/melolo",
+  },
 
   {
     id: "freereels",
@@ -66,12 +65,13 @@ export const PLATFORMS: PlatformInfo[] = [
     logo: "/dramanova.png",
     apiBase: "/api/dramanova",
   },
-  {
-    id: "goodshort",
-    name: "GoodShort",
-    logo: "/goodshort.jpg",
-    apiBase: "/api/goodshort",
-  },
+  // [TEMPORARILY DISABLED] GoodShort - Dinonaktifkan sementara.
+  // {
+  //   id: "goodshort",
+  //   name: "GoodShort",
+  //   logo: "/goodshort.jpg",
+  //   apiBase: "/api/goodshort",
+  // },
 ];
 
 interface PlatformState {

@@ -62,13 +62,40 @@ export interface MeloloDetailResponse {
   };
 }
 
+export interface MeloloStreamQuality {
+  definition?: string;
+  resolution?: string;
+  size?: number;
+  codec?: string;
+  streamUrl?: string;
+  url?: string;
+  backupUrl?: string;
+  main_url?: string;
+  quality?: string;
+}
+
 export interface MeloloStreamResponse {
-  code: number;
-  data: {
-    main_url: string;
-    video_model: string | any; // JSON string or object containing more details if needed
+  success?: boolean;
+  code?: number;
+  videoId?: string;
+  videoDuration?: number;
+  qualities?: MeloloStreamQuality[];
+  streamUrl?: string;
+  url?: string;
+  backupUrl?: string;
+  main_url?: string;
+  definition?: string;
+  resolution?: string;
+  size?: number;
+  encrypted?: boolean;
+  decryptionKey?: string;
+  data?: {
+    main_url?: string;
+    video_model?: string | any;
+    qualities?: any[];
     [key: string]: any;
   };
+  [key: string]: any;
 }
 
 export function useMeloloLatest() {
@@ -109,7 +136,7 @@ export function useMeloloStream(videoId: string) {
     queryKey: ["melolo", "stream", videoId],
     queryFn: () => fetchJson<MeloloStreamResponse>(`/api/melolo/stream?videoId=${videoId}`),
     enabled: !!videoId,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 1000,
     placeholderData: keepPreviousData,
   });
 }
@@ -121,8 +148,8 @@ export function useInfiniteMeloloDramas() {
     queryFn: ({ pageParam = 0 }) => fetchJson<MeloloResponse>(`/api/melolo/foryou?offset=${pageParam}`),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      if (lastPage.has_more && lastPage.next_offset !== undefined) {
-          return lastPage.next_offset;
+      if (lastPage.has_more && lastPage.next_offset !== undefined && lastPage.next_offset <= 100) {
+        return lastPage.next_offset;
       }
       return undefined;
     },

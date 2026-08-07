@@ -23,7 +23,7 @@ export default function MeloloWatchPage() {
   const router = useRouter();
   const [showEpisodeList, setShowEpisodeList] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [selectedQuality, setSelectedQuality] = useState<VideoQuality | null>(null);
+  const [userSelectedQualityName, setUserSelectedQualityName] = useState<string | null>(null);
   
   // Internal state for videoId to prevent page unmount/remount on navigation
   const [currentVideoId, setCurrentVideoId] = useState(params.videoId || "");
@@ -44,92 +44,121 @@ export default function MeloloWatchPage() {
 
   // Process video qualities
   const qualities = useMemo(() => {
-    const getSafeUrl = (urlStr: string) => {
+    const fixProtocol = (urlStr?: string) => {
       if (!urlStr) return "";
-      if (urlStr.startsWith("http")) return urlStr;
-      try {
-        const decoded = atob(urlStr);
-        if (decoded.startsWith("http")) return decoded;
-      } catch (e) {}
+      if (urlStr.startsWith("http://api.sansekai.my.id")) {
+        return urlStr.replace("http://api.sansekai.my.id", "https://api.sansekai.my.id");
+      }
       return urlStr;
     };
 
-    if (!rawVideoModel && !streamData?.data?.main_url) return [];
-    
-    try {
-      let parsedModel = null;
-      if (rawVideoModel) {
-        parsedModel = typeof rawVideoModel === "string" ? JSON.parse(rawVideoModel) : rawVideoModel;
-      }
-      const videoList = parsedModel?.video_list;
-      const availableQualities: VideoQuality[] = [];
+    if (!streamData) return [];
+    const availableQualities: VideoQuality[] = [];
 
-      if (videoList) {
-        const qualityMap: Record<string, string> = {
-          video_1: "240p",
-          video_2: "360p",
-          video_3: "480p",
-          video_4: "540p",
-          video_5: "720p",
-        };
-
-        Object.entries(videoList).forEach(([key, value]: [string, any]) => {
-          const finalUrl = value?.main_url_decoded || getSafeUrl(value?.main_url);
-          if (finalUrl) {
-            availableQualities.push({
-              name: value?.definition || qualityMap[key] || key,
-              url: finalUrl,
-            });
-          }
-        });
-
-        // Sort qualities from highest to lowest resolution
-        availableQualities.sort((a, b) => {
-          const parseRes = (name: string) => parseInt(name.replace(/[^0-9]/g, "")) || 0;
-          return parseRes(b.name) - parseRes(a.name);
-        });
-      }
-
-      // Fallback to data.main_url if no qualities extracted
-      if (availableQualities.length === 0 && streamData?.data?.main_url) {
-        availableQualities.push({
-          name: "Default",
-          url: getSafeUrl(streamData.data.main_url),
-        });
-      }
-
-      return availableQualities;
-    } catch (e) {
-      console.error("Error parsing video model", e);
-      if (streamData?.data?.main_url) {
-        return [{
-          name: "Default",
-          url: getSafeUrl(streamData.data.main_url),
-        }];
-      }
-      return [];
+    // 1. Direct qualities array from streamData (new endpoint /melolo/episode response)
+    if (Array.isArray(streamData.qualities) && streamData.qualities.length > 0) {
+      streamData.qualities.forEach((q: any) => {
+        const streamUrl = fixProtocol(q.streamUrl || q.url || q.main_url || q.backupUrl);
+        if (streamUrl) {
+          availableQualities.push({
+            name: q.definition || q.quality || "Default",
+            url: streamUrl,
+          });
+        }
+      });
     }
+
+    // 2. Direct qualities inside streamData.data
+    if (availableQualities.length === 0 && Array.isArray(streamData.data?.qualities)) {
+      streamData.data.qualities.forEach((q: any) => {
+        const streamUrl = fixProtocol(q.streamUrl || q.url || q.main_url || q.backupUrl);
+        if (streamUrl) {
+          availableQualities.push({
+            name: q.definition || q.quality || "Default",
+            url: streamUrl,
+          });
+        }
+      });
+    }
+
+    // 3. Top-level streamUrl / url in streamData
+    if (availableQualities.length === 0 && (streamData.streamUrl || streamData.url || streamData.main_url)) {
+      const mainUrl = fixProtocol(streamData.streamUrl || streamData.url || streamData.main_url);
+      if (mainUrl) {
+        availableQualities.push({
+          name: streamData.definition || "Default",
+          url: mainUrl,
+        });
+      }
+    }
+
+    // 4. Legacy fallback (video_model / data.main_url)
+    if (availableQualities.length === 0) {
+      try {
+        let parsedModel = null;
+        if (rawVideoModel) {
+          parsedModel = typeof rawVideoModel === "string" ? JSON.parse(rawVideoModel) : rawVideoModel;
+        }
+        const videoList = parsedModel?.video_list;
+
+        if (videoList) {
+          const qualityMap: Record<string, string> = {
+            video_1: "240p",
+            video_2: "360p",
+            video_3: "480p",
+            video_4: "540p",
+            video_5: "720p",
+          };
+
+          Object.entries(videoList).forEach(([key, value]: [string, any]) => {
+            const finalUrl = fixProtocol(value?.main_url_decoded || value?.main_url);
+            if (finalUrl) {
+              availableQualities.push({
+                name: value?.definition || qualityMap[key] || key,
+                url: finalUrl,
+              });
+            }
+          });
+        }
+
+        if (availableQualities.length === 0 && streamData?.data?.main_url) {
+          availableQualities.push({
+            name: "Default",
+            url: fixProtocol(streamData.data.main_url),
+          });
+        }
+      } catch (e) {
+        console.error("Error parsing video model", e);
+      }
+    }
+
+    // Sort qualities from highest to lowest resolution for display in dropdown menu
+    availableQualities.sort((a, b) => {
+      const parseRes = (name: string) => parseInt(name.replace(/[^0-9]/g, "")) || 0;
+      return parseRes(b.name) - parseRes(a.name);
+    });
+
+    return availableQualities;
   }, [rawVideoModel, streamData]);
 
-  // Set default quality
-  useEffect(() => {
-    if (qualities.length > 0) {
-      let nextQuality = null;
-      if (selectedQuality) {
-        nextQuality = qualities.find(q => q.name === selectedQuality.name);
-      }
-      
-      if (!nextQuality) {
-         // Prefer 720p as default if available, then 540p, then 480p, otherwise first
-         nextQuality = qualities.find(q => q.name === "720p") || qualities.find(q => q.name === "540p") || qualities.find(q => q.name === "480p") || qualities[0];
-      }
+  // Determine active quality (prefer user choice if set, else 540p, 480p, 360p, 240p, or qualities[0])
+  const activeQuality = useMemo(() => {
+    if (qualities.length === 0) return null;
 
-      if (nextQuality && nextQuality.url !== selectedQuality?.url) {
-        setSelectedQuality(nextQuality);
-      }
+    if (userSelectedQualityName) {
+      const match = qualities.find((q) => q.name === userSelectedQualityName);
+      if (match) return match;
     }
-  }, [qualities, selectedQuality]);
-  
+
+    return (
+      qualities.find((q) => q.name.includes("540")) ||
+      qualities.find((q) => q.name.includes("480")) ||
+      qualities.find((q) => q.name.includes("360")) ||
+      qualities.find((q) => q.name.includes("240")) ||
+      qualities[0]
+    );
+  }, [qualities, userSelectedQualityName]);
+
   // Find current episode index
   const currentEpisodeIndex = drama?.video_list?.findIndex(v => v.vid === currentVideoId) ?? -1;
   const totalEpisodes = drama?.video_list?.length || 0;
@@ -196,15 +225,15 @@ export default function MeloloWatchPage() {
               <DropdownMenuTrigger asChild>
                 <button className="p-2 text-white/90 hover:text-white transition-colors rounded-full hover:bg-white/10 flex items-center gap-1">
                   <Settings className="w-6 h-6 drop-shadow-md" />
-                  <span className="text-xs font-bold drop-shadow-md hidden sm:inline">{selectedQuality?.name || "..."}</span>
+                  <span className="text-xs font-bold drop-shadow-md hidden sm:inline">{activeQuality?.name || "..."}</span>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-black/90 border-white/10 text-white">
                 {qualities.map((q) => (
                   <DropdownMenuItem 
                     key={q.name}
-                    className={`cursor-pointer ${selectedQuality?.name === q.name ? "bg-white/20" : "hover:bg-white/10"}`}
-                    onClick={() => setSelectedQuality(q)}
+                    className={`cursor-pointer ${activeQuality?.name === q.name ? "bg-white/20 font-bold text-primary" : "hover:bg-white/10"}`}
+                    onClick={() => setUserSelectedQualityName(q.name)}
                   >
                     {q.name}
                   </DropdownMenuItem>
@@ -225,16 +254,10 @@ export default function MeloloWatchPage() {
        {/* Video Player */}
        <div className="flex-1 w-full h-full relative bg-black flex flex-col items-center justify-center">
          <div className="relative w-full h-full flex items-center justify-center">
-             {/* 
-                 Video Element:
-                 We remove the 'key' to allow the VIDEO element to be reused across renders.
-                 This is CRITICAL for maintaining Fullscreen status.
-                 We also use a ref to manually update if needed, though React src prop update usually suffices.
-             */}
-            {(selectedQuality) ? (
+            {activeQuality ? (
               <video
                 ref={videoRef}
-                src={selectedQuality.url}
+                src={activeQuality.url}
                 controls
                 autoPlay
                 playsInline
@@ -242,9 +265,13 @@ export default function MeloloWatchPage() {
                 className="w-full h-full object-contain max-h-[100dvh]"
               />
             ) : (
-                // Fallback while initializing first time quality
+                // Fallback while loading quality
                 <div className="w-full h-full flex items-center justify-center text-white/50">
-                    {streamLoading ? "" : "Video unavailable"}
+                    {streamLoading || streamFetching ? (
+                      <Loader2 className="w-12 h-12 animate-spin text-primary drop-shadow-md" />
+                    ) : (
+                      "Video unavailable"
+                    )}
                 </div>
             )}
             
