@@ -5,8 +5,10 @@ import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { InfiniteShortMaxSection } from "./InfiniteShortMaxSection";
+import { useI18n } from "@/i18n/LanguageContext";
 
 export function ShortMaxHome() {
+  const { t } = useI18n();
   const {
     data: rekomendasiData,
     isLoading: loadingRekomendasi,
@@ -21,11 +23,11 @@ export function ShortMaxHome() {
         {errorRekomendasi || (!loadingRekomendasi && (!rekomendasiData?.data || rekomendasiData.data.length === 0)) ? (
           <>
             <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
-              Rekomendasi
+              {t("sectionRecommendation")}
             </h2>
             <UnifiedErrorDisplay
-              title="Gagal Memuat Rekomendasi"
-              message="Tidak dapat mengambil data drama."
+              title={t("shortmaxRecommendationLoadFailed")}
+              message={t("cannotFetchData")}
               onRetry={() => refetchRekomendasi()}
             />
           </>
@@ -43,7 +45,7 @@ export function ShortMaxHome() {
         ) : (
           <>
             <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
-              Rekomendasi
+              {t("sectionRecommendation")}
             </h2>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-4">
               {rekomendasiData!.data.map((drama, index) => (
@@ -66,7 +68,7 @@ export function ShortMaxHome() {
       </section>
 
       {/* Infinite Scroll Section */}
-      <InfiniteShortMaxSection title="Lainnya" />
+      <InfiniteShortMaxSection title={t("sectionMore")} />
     </div>
   );
 }

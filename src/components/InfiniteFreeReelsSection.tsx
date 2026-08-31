@@ -6,12 +6,14 @@ import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { useInfiniteFreeReelsDramas } from "@/hooks/useFreeReels";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/i18n/LanguageContext";
 
 interface InfiniteFreeReelsSectionProps {
   title: string;
 }
 
 export function InfiniteFreeReelsSection({ title }: InfiniteFreeReelsSectionProps) {
+  const { t } = useI18n();
   const {
     data,
     fetchNextPage,
@@ -58,8 +60,8 @@ export function InfiniteFreeReelsSection({ title }: InfiniteFreeReelsSectionProp
           {title}
         </h2>
         <UnifiedErrorDisplay
-          title={`Gagal Memuat ${title}`}
-          message="Tidak dapat mengambil data drama."
+          title={t("loadFailedNamed", { name: title })}
+          message={t("cannotFetchData")}
           onRetry={() => refetch()}
         />
       </section>
@@ -108,7 +110,7 @@ export function InfiniteFreeReelsSection({ title }: InfiniteFreeReelsSectionProp
         ) : hasNextPage ? (
           <div className="h-4" /> // Invisible trigger
         ) : (
-          <p className="text-muted-foreground text-sm">Sudah mencapai akhir daftar</p>
+          <p className="text-muted-foreground text-sm">{t("reachedEnd")}</p>
         )}
       </div>
     </section>

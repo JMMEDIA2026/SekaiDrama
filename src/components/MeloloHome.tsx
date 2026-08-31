@@ -5,6 +5,7 @@ import { useMeloloLatest, useMeloloTrending } from "@/hooks/useMelolo";
 import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { InfiniteMeloloSection } from "./InfiniteMeloloSection";
+import { useI18n } from "@/i18n/LanguageContext";
 
 function MeloloSectionSkeleton() {
   return (
@@ -23,7 +24,8 @@ function MeloloSectionSkeleton() {
 }
 
 export function MeloloHome() {
-  const { 
+  const { t } = useI18n();
+  const {
     data: latestData, 
     isLoading: loadingLatest, 
     error: errorLatest 
@@ -59,7 +61,7 @@ export function MeloloHome() {
         <section>
           <div className="mb-4 flex items-center justify-between">
              <h2 className="font-display font-bold text-xl md:text-2xl text-foreground">
-               Sedang Hangat
+               {t("sectionHot")}
              </h2>
           </div>
           
@@ -84,7 +86,7 @@ export function MeloloHome() {
         <section>
           <div className="mb-4 flex items-center justify-between">
              <h2 className="font-display font-bold text-xl md:text-2xl text-foreground">
-               Rilis Baru
+               {t("sectionNewRelease")}
              </h2>
           </div>
           
@@ -105,11 +107,11 @@ export function MeloloHome() {
       )}
 
       {/* Infinite Scroll Section */}
-      <InfiniteMeloloSection title="Lainnya" />
+      <InfiniteMeloloSection title={t("sectionMore")} />
 
       {!loadingLatest && !loadingTrending && !latestData?.books?.length && !trendingData?.books?.length && (
          <div className="text-center py-20 text-muted-foreground">
-           Tidak ada konten tersedia saat ini.
+           {t("noContentAvailable")}
          </div>
       )}
     </div>

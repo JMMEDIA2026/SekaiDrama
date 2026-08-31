@@ -3,9 +3,11 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useI18n } from "@/i18n/LanguageContext";
 
 export function Footer() {
   const pathname = usePathname();
+  const { t } = useI18n();
 
   // Hide footer on watch pages for immersive video experience
   if (pathname?.startsWith("/watch")) {
@@ -32,8 +34,8 @@ export function Footer() {
           </ul> */}
 
           <p className="text-sm text-muted-foreground text-center">
-            API yang digunakan:{" "}
-            <a 
+            {t("footerApiUsed")}{" "}
+            <a
                   href="https://api.sansekai.my.id" 
                   target="_blank" 
                   rel="noopener noreferrer"
@@ -46,7 +48,7 @@ export function Footer() {
 
           {/* Copyright */}
           <p className="text-xs text-muted-foreground/80 text-center font-medium">
-            © {new Date().getFullYear()} Made with ❤️ by Yusril
+            {t("footerMadeBy", { year: new Date().getFullYear() })}
           </p>
         </div>
       </div>

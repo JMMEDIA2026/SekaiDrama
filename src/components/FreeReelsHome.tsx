@@ -6,6 +6,7 @@ import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { InfiniteFreeReelsSection } from "./InfiniteFreeReelsSection";
+import { useI18n } from "@/i18n/LanguageContext";
 
 // Helper to extract items from a module, handling special cases like 'recommend'
 function getModuleItems(module: FreeReelsModule): FreeReelsItem[] {
@@ -43,9 +44,9 @@ function cleanTitle(title: string): string {
 }
 
 export function FreeReelsHome() {
+  const { t } = useI18n();
 
-
-  const { 
+  const {
     data: homeData, 
     isLoading: loadingHome, 
     error: errorHome, 
@@ -87,7 +88,7 @@ export function FreeReelsHome() {
            const validItems = items.filter(item => item.title && item.cover);
            if (validItems.length === 0) return null;
 
-           const title = (module.module_name ? cleanTitle(module.module_name) : "") || "Rekomendasi Untukmu";
+           const title = (module.module_name ? cleanTitle(module.module_name) : "") || t("sectionRecommendedForYou");
 
            return (
             <section key={`home-module-${mIdx}`} className="space-y-4">
@@ -122,7 +123,7 @@ export function FreeReelsHome() {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-display font-bold text-xl md:text-2xl text-foreground">
-                Anime
+                {t("animeSectionName")}
               </h2>
             </div>
             
@@ -162,8 +163,8 @@ export function FreeReelsHome() {
         )
       )}
 
-      {/* SECTION: Infinite Scroll / Lainnya */}
-      <InfiniteFreeReelsSection title="Lainnya" />
+      {/* SECTION: Infinite Scroll / More */}
+      <InfiniteFreeReelsSection title={t("sectionMore")} />
 
     </div>
   );

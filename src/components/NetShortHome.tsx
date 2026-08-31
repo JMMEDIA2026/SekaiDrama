@@ -5,6 +5,7 @@ import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { InfiniteNetShortSection } from "./InfiniteNetShortSection";
+import { useI18n } from "@/i18n/LanguageContext";
 
 // ... existing emoji stripper ...
 function stripEmoji(text: string): string {
@@ -16,6 +17,7 @@ function stripEmoji(text: string): string {
 const EXCLUDED_SECTIONS = ['segera tayang', 'coming soon', 'upcoming'];
 
 export function NetShortHome() {
+  const { t } = useI18n();
   const { data: theatersData, isLoading: loadingTheaters, error: errorTheaters, refetch: refetchTheaters } = useNetShortTheaters();
   const { data: forYouData, isLoading: loadingForYou, error: errorForYou, refetch: refetchForYou } = useNetShortForYou();
 
@@ -43,9 +45,9 @@ export function NetShortHome() {
 
   if (errorTheaters || errorForYou) {
     return (
-      <UnifiedErrorDisplay 
-        title="Gagal Memuat NetShort"
-        message="Tidak dapat terhubung ke layanan NetShort."
+      <UnifiedErrorDisplay
+        title={t("netshortLoadFailed")}
+        message={t("netshortConnectFailed")}
         onRetry={() => {
             refetchTheaters();
             refetchForYou();
@@ -67,7 +69,7 @@ export function NetShortHome() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold font-display text-foreground">
-              Rekomendasi Untukmu
+              {t("sectionRecommendedForYou")}
             </h2>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-4">
@@ -128,7 +130,7 @@ export function NetShortHome() {
       ))}
 
       {/* Infinite Scroll Section */}
-      <InfiniteNetShortSection title="Lainnya" />
+      <InfiniteNetShortSection title={t("sectionMore")} />
     </div>
   );
 }

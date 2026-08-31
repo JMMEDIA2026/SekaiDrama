@@ -6,12 +6,14 @@ import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { useInfiniteMeloloDramas } from "@/hooks/useMelolo";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/i18n/LanguageContext";
 
 interface InfiniteMeloloSectionProps {
   title: string;
 }
 
 export function InfiniteMeloloSection({ title }: InfiniteMeloloSectionProps) {
+  const { t } = useI18n();
   const {
     data,
     fetchNextPage,
@@ -53,8 +55,8 @@ export function InfiniteMeloloSection({ title }: InfiniteMeloloSectionProps) {
           {title}
         </h2>
         <UnifiedErrorDisplay
-          title={`Gagal Memuat ${title}`}
-          message="Tidak dapat mengambil data drama."
+          title={t("loadFailedNamed", { name: title })}
+          message={t("cannotFetchData")}
           onRetry={() => refetch()}
         />
       </section>
@@ -101,7 +103,7 @@ export function InfiniteMeloloSection({ title }: InfiniteMeloloSectionProps) {
         ) : hasNextPage ? (
           <div className="h-4" /> // Invisible trigger
         ) : (
-          <p className="text-muted-foreground text-sm">Sudah mencapai akhir daftar</p>
+          <p className="text-muted-foreground text-sm">{t("reachedEnd")}</p>
         )}
       </div>
     </section>
