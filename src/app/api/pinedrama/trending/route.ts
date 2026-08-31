@@ -1,12 +1,12 @@
-import { encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse, withLang } from "@/lib/api-utils";
 
 const UPSTREAM_API = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api";
 const HEADERS = { "User-Agent": "okhttp/4.12.0" };
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     // Page 1
-    const res1 = await fetch(`${UPSTREAM_API}/pinedrama/trending?cursor=1`, { headers: HEADERS });
+    const res1 = await fetch(withLang(`${UPSTREAM_API}/pinedrama/trending?cursor=1`, request), { headers: HEADERS });
     if (!res1.ok) throw new Error(`Failed to fetch pinedrama trending page 1: ${res1.status}`);
     const page1 = await res1.json();
 
@@ -15,7 +15,7 @@ export async function GET() {
     // Page 2 — use cursor from page 1
     if (page1.has_more && page1.cursor) {
       const res2 = await fetch(
-        `${UPSTREAM_API}/pinedrama/trending?cursor=${encodeURIComponent(page1.cursor)}`,
+        withLang(`${UPSTREAM_API}/pinedrama/trending?cursor=${encodeURIComponent(page1.cursor)}`, request),
         { headers: HEADERS }
       );
       if (res2.ok) {

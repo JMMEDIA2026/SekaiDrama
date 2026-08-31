@@ -14,8 +14,10 @@ import { PineDramaHome } from "@/components/PineDramaHome";
 import { useLatestDramas, useTrendingDramas, useDubindoDramas } from "@/hooks/useDramas";
 import { usePlatform } from "@/hooks/usePlatform";
 import { InfiniteDramaSection } from "@/components/InfiniteDramaSection";
+import { useI18n } from "@/i18n/LanguageContext";
 
 export default function HomeContent() {
+  const { t } = useI18n();
   const { isPineDrama, isDramaBox, isReelShort, isShortMax, isNetShort, isMelolo, isFreeReels, isDramaNova, isGoodShort } = usePlatform();
 
   // Fetch data for all DramaBox sections
@@ -44,21 +46,21 @@ export default function HomeContent() {
       {isDramaBox && (
         <div className="container mx-auto px-4 py-6 space-y-8">
           <DramaSection
-            title="Terbaru"
+            title={t("sectionLatest")}
             dramas={latestDramas}
             isLoading={loadingLatest}
             error={!!errorLatest}
             onRetry={() => refetchLatest()}
           />
           <DramaSection
-            title="Terpopuler"
+            title={t("sectionTrending")}
             dramas={trendingDramas}
             isLoading={loadingTrending}
             error={!!errorTrending}
             onRetry={() => refetchTrending()}
           />
           <DramaSection
-            title="Dubindo"
+            title={t("sectionDubbed")}
             dramas={dubindoDramas}
             isLoading={loadingDubindo}
             error={!!errorDubindo}
@@ -66,7 +68,7 @@ export default function HomeContent() {
           />
 
           {/* Infinite Scroll Section */}
-          <InfiniteDramaSection title="Lainnya" />
+          <InfiniteDramaSection title={t("sectionMore")} />
         </div>
       )}
 

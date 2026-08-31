@@ -1,4 +1,4 @@
-import { encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse, appendLang } from "@/lib/api-utils";
 
 const UPSTREAM_API = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api";
 
@@ -18,6 +18,7 @@ export async function GET(request: Request) {
     const targetUrl = new URL(`${UPSTREAM_API}/pinedrama/episode`);
     targetUrl.searchParams.set("collection_id", collectionId);
     targetUrl.searchParams.set("episodeNumber", episodeNumber);
+    appendLang(targetUrl, request);
 
     const res = await fetch(targetUrl.toString(), {
       headers: {

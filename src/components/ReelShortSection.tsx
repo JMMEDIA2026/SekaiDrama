@@ -8,9 +8,11 @@ import { BannerCarousel } from "./BannerCarousel";
 import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { InfiniteReelShortSection } from "./InfiniteReelShortSection";
+import { useI18n } from "@/i18n/LanguageContext";
 import type { ReelShortBook, ReelShortBanner } from "@/types/reelshort";
 
 export function ReelShortSection() {
+  const { t } = useI18n();
   const { data, isLoading, error, refetch } = useReelShortHomepage();
 
   // Group content by sections
@@ -18,7 +20,7 @@ export function ReelShortSection() {
     if (!data?.data?.lists) return { banners: [], bookGroups: [] };
 
     const tabs = data.data.tab_list || [];
-    const popularTab = tabs.find((t) => t.tab_name === "POPULER") || tabs[0];
+    const popularTab = tabs.find((tab) => tab.tab_name === "POPULER") || tabs[0];
     
     if (!popularTab) return { banners: [], bookGroups: [] };
 
@@ -32,20 +34,25 @@ export function ReelShortSection() {
         banners.push(...list.banners);
       }
       if (list.books && list.books.length > 0) {
-        const sectionNames = ["Populer", "Terbaru", "Trending", "Untuk Kamu"];
+        const sectionNames = [
+          t("popularSectionName"),
+          t("sectionLatest"),
+          t("sectionTrending"),
+          t("forYouSectionName"),
+        ];
         const title = sectionNames[index] || `Section ${index + 1}`;
         bookGroups.push({ title, books: list.books });
       }
     });
 
     return { banners, bookGroups };
-  }, [data]);
+  }, [data, t]);
 
   if (error) {
     return (
-      <UnifiedErrorDisplay 
-        title="Gagal Memuat ReelShort"
-        message="Terjadi kesalahan saat mengambil data dari server."
+      <UnifiedErrorDisplay
+        title={t("reelshortLoadFailed")}
+        message={t("reelshortLoadError")}
         onRetry={() => refetch()}
       />
     );
@@ -104,7 +111,7 @@ export function ReelShortSection() {
       ))}
 
       {/* Infinite Scroll Section */}
-      <InfiniteReelShortSection title="Lainnya" />
+      <InfiniteReelShortSection title={t("sectionMore")} />
 
     </div>
   );

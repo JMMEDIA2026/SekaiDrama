@@ -18,9 +18,12 @@ import { usePlatform } from "@/hooks/usePlatform";
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePathname } from "next/navigation";
 import { optimizeThumb } from "@/lib/image-utils";
+import { useI18n } from "@/i18n/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export function Header() {
   const pathname = usePathname();
+  const { t } = useI18n();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedQuery = useDebounce(searchQuery, 300);
@@ -126,12 +129,13 @@ export function Header() {
             </span>
           </Link>
 
-          {/* Search Button Only - No Nav Links */}
+          {/* Search & Language */}
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <button
               onClick={() => setSearchOpen(true)}
               className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
-              aria-label="Search"
+              aria-label={t("searchAriaLabel")}
             >
               <Search className="w-5 h-5" />
             </button>
@@ -152,7 +156,7 @@ export function Header() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={`Cari drama di ${platformInfo.name}...`}
+                    placeholder={t("searchPlaceholder", { platform: platformInfo.name })}
                     className="search-input pl-12"
                     autoFocus
                   />
@@ -167,7 +171,7 @@ export function Header() {
 
               {/* Platform indicator */}
               <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-                <span>Mencari di:</span>
+                <span>{t("searchingIn")}</span>
                 <span className="px-2 py-1 rounded-full bg-primary/20 text-primary font-medium">
                   {platformInfo.name}
                 </span>
@@ -373,7 +377,7 @@ export function Header() {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-muted">
-                              <span className="text-xs text-muted-foreground">No Img</span>
+                              <span className="text-xs text-muted-foreground">{t("noImage")}</span>
                             </div>
                           )}
                         </div>
@@ -566,14 +570,16 @@ export function Header() {
 
                 {searchResults && searchResults.length === 0 && normalizedQuery && (
                   <div className="text-center py-12">
-                    <p className="text-muted-foreground">Tidak ada hasil untuk "{normalizedQuery}" di {platformInfo.name}</p>
+                    <p className="text-muted-foreground">
+                      {t("noResultsFor", { query: normalizedQuery, platform: platformInfo.name })}
+                    </p>
                   </div>
                 )}
 
                 {!normalizedQuery && (
                   <div className="text-center py-12">
                     <Search className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
-                    <p className="text-muted-foreground">Ketik untuk mencari drama di {platformInfo.name}</p>
+                    <p className="text-muted-foreground">{t("typeToSearch", { platform: platformInfo.name })}</p>
                   </div>
                 )}
               </div>

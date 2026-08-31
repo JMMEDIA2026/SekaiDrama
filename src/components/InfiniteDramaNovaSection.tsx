@@ -6,12 +6,15 @@ import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { useInfiniteDramaNovaHome } from "@/hooks/useDramaNova";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/i18n/LanguageContext";
 
 interface InfiniteDramaNovaSectionProps {
   title?: string;
 }
 
-export function InfiniteDramaNovaSection({ title = "Lainnya" }: InfiniteDramaNovaSectionProps) {
+export function InfiniteDramaNovaSection({ title }: InfiniteDramaNovaSectionProps) {
+  const { t } = useI18n();
+  const sectionTitle = title ?? t("sectionMore");
   const {
     data,
     fetchNextPage,
@@ -47,7 +50,7 @@ export function InfiniteDramaNovaSection({ title = "Lainnya" }: InfiniteDramaNov
     return (
       <section className="space-y-4">
         <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
-          {title}
+          {sectionTitle}
         </h2>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-4">
           {Array.from({ length: 16 }).map((_, i) => (
@@ -62,11 +65,11 @@ export function InfiniteDramaNovaSection({ title = "Lainnya" }: InfiniteDramaNov
     return (
       <section>
         <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
-          {title}
+          {sectionTitle}
         </h2>
-        <UnifiedErrorDisplay 
-          title={`Gagal Memuat ${title}`}
-          message={error?.message || "Terjadi kesalahan"}
+        <UnifiedErrorDisplay
+          title={t("loadFailedNamed", { name: sectionTitle })}
+          message={error?.message || t("genericError")}
           onRetry={() => refetch()}
         />
       </section>
@@ -83,7 +86,7 @@ export function InfiniteDramaNovaSection({ title = "Lainnya" }: InfiniteDramaNov
   return (
     <section>
       <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
-        {title}
+        {sectionTitle}
       </h2>
 
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-4">
@@ -106,13 +109,13 @@ export function InfiniteDramaNovaSection({ title = "Lainnya" }: InfiniteDramaNov
         {isFetchingNextPage ? (
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="w-8 h-8 md:w-10 md:h-10 animate-spin text-primary" />
-            <p className="text-sm md:text-base text-muted-foreground font-medium animate-pulse">Memuat lebih banyak...</p>
+            <p className="text-sm md:text-base text-muted-foreground font-medium animate-pulse">{t("loadingMore")}</p>
           </div>
         ) : hasNextPage ? (
           <div className="h-4" /> // Invisible trigger
         ) : (
           <div className="mt-8 pt-8 text-center border-t border-white/5 pb-8">
-            <p className="text-sm md:text-base text-muted-foreground font-medium">Semua data telah dimuat</p>
+            <p className="text-sm md:text-base text-muted-foreground font-medium">{t("allDataLoaded")}</p>
           </div>
         )}
       </div>

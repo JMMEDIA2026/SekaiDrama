@@ -1,4 +1,5 @@
 import { decryptData } from "@/lib/crypto";
+import { toDramaboxLang } from "@/lib/language";
 
 export class ApiError extends Error {
   status: number;
@@ -12,8 +13,27 @@ export class ApiError extends Error {
   }
 }
 
+const LANG_STORAGE_KEY = "sekaidrama-lang";
+
+// Menyisipkan bahasa UI yang sedang aktif ke setiap request API,
+// supaya konten drama (judul/deskripsi) ikut datang dalam bahasa tersebut.
+export function withCurrentLang(url: string): string {
+  if (typeof window === "undefined") return url;
+
+  let lang: string | null = null;
+  try {
+    lang = localStorage.getItem(LANG_STORAGE_KEY);
+  } catch {
+    // localStorage tidak tersedia (mis. mode privat) -> lewati
+  }
+  if (!lang) return url;
+
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}lang=${encodeURIComponent(toDramaboxLang(lang))}`;
+}
+
 export async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(url, options);
+  const response = await fetch(withCurrentLang(url), options);
 
   if (!response.ok) {
     let errorData;

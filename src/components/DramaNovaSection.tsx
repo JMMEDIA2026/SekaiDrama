@@ -3,6 +3,7 @@
 import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
+import { useI18n } from "@/i18n/LanguageContext";
 import type { DramaNovaItem } from "@/types/dramanova";
 
 interface DramaNovaSectionProps {
@@ -14,15 +15,17 @@ interface DramaNovaSectionProps {
 }
 
 export function DramaNovaSection({ title, dramas, isLoading, error, onRetry }: DramaNovaSectionProps) {
+  const { t } = useI18n();
+
   if (error) {
     return (
       <section>
         <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
           {title}
         </h2>
-        <UnifiedErrorDisplay 
-          title={`Gagal Memuat ${title}`}
-          message="Tidak dapat mengambil data drama."
+        <UnifiedErrorDisplay
+          title={t("loadFailedNamed", { name: title })}
+          message={t("cannotFetchData")}
           onRetry={onRetry}
         />
       </section>

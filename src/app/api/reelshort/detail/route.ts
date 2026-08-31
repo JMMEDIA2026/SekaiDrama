@@ -1,4 +1,4 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { safeJson, encryptedResponse, withLang } from "@/lib/api-utils";
 import { NextRequest, NextResponse } from "next/server";
 
 const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/reelshort";
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     const response = await fetch(
-      `${UPSTREAM_API}/detail?bookId=${encodeURIComponent(bookId)}`,
+      withLang(`${UPSTREAM_API}/detail?bookId=${encodeURIComponent(bookId)}`, request),
       {
         cache: 'no-store',
       }
