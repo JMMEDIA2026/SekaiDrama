@@ -1,4 +1,4 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { safeJson, encryptedResponse, withLang } from "@/lib/api-utils";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
@@ -16,7 +16,7 @@ export async function GET(
 
   // If API fetch -> proxy to upstream
   try {
-    const response = await fetch(`${UPSTREAM_API}/detail?bookId=${bookId}`, {
+    const response = await fetch(withLang(`${UPSTREAM_API}/detail?bookId=${bookId}`, request), {
       cache: 'no-store',
     });
 

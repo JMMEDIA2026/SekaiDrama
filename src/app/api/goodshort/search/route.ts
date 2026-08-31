@@ -1,4 +1,4 @@
-import { encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse, appendLang } from "@/lib/api-utils";
 
 const UPSTREAM_API = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api";
 
@@ -9,6 +9,7 @@ export async function GET(request: Request) {
 
     const targetUrl = new URL(`${UPSTREAM_API}/goodshort/search`);
     targetUrl.searchParams.set("query", query);
+    appendLang(targetUrl, request);
 
     const res = await fetch(targetUrl.toString(), {
       headers: {

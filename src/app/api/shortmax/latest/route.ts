@@ -1,11 +1,12 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { safeJson, encryptedResponse, withLang } from "@/lib/api-utils";
 import { optimizeCover } from "@/lib/image-utils";
+import { NextRequest } from "next/server";
 
 const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/shortmax";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${UPSTREAM_API}/latest`, {
+    const response = await fetch(withLang(`${UPSTREAM_API}/latest`, request), {
       cache: 'no-store',
     });
 

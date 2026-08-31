@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { DEFAULT_LANG, HTML_LANG_TAGS, dictionaries, type UILang } from "./translations";
 
 const STORAGE_KEY = "sekaidrama-lang";
@@ -19,6 +20,8 @@ function isUILang(value: string | null): value is UILang {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<UILang>(DEFAULT_LANG);
+  const queryClient = useQueryClient();
+  const isFirstRun = useRef(true);
 
   // 저장된 사용자 언어 설정을 불러옵니다 (없으면 한국어 기본값 유지)
   useEffect(() => {
@@ -38,7 +41,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // 저장 실패는 무시 (시크릿 모드 등)
     }
-  }, [lang]);
+
+    // 언어를 바꾸면 이미 캐시된 드라마 데이터(제목/설명 등)를
+    // 새 언어로 다시 가져오도록 React Query 캐시를 초기화합니다.
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+    } else {
+      queryClient.invalidateQueries();
+    }
+  }, [lang, queryClient]);
 
   const setLang = useCallback((next: UILang) => setLangState(next), []);
 

@@ -1,13 +1,14 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import type { DramaNovaListResponse, DramaNovaPagedResponse, DramaNovaItem, DramaNovaDetailResponse, DramaNovaVideoOuterResponse } from "@/types/dramanova";
 import { decryptData } from "@/lib/crypto";
+import { withCurrentLang } from "@/lib/fetcher";
 
 // Fetch Drama 18+
 export function useDramaNovaDrama18() {
   return useQuery({
     queryKey: ["dramanova", "drama18"],
     queryFn: async () => {
-      const res = await fetch("/api/dramanova/drama18");
+      const res = await fetch(withCurrentLang("/api/dramanova/drama18"));
       if (!res.ok) throw new Error("Gagal mengambil data Drama 18+");
       const resJson = await res.json();
       const data: DramaNovaListResponse = decryptData(resJson.data);
@@ -28,7 +29,7 @@ export function useDramaNovaKomik() {
   return useQuery({
     queryKey: ["dramanova", "komik"],
     queryFn: async () => {
-      const res = await fetch("/api/dramanova/komik");
+      const res = await fetch(withCurrentLang("/api/dramanova/komik"));
       if (!res.ok) throw new Error("Gagal mengambil data Komik");
       const resJson = await res.json();
       const data: DramaNovaPagedResponse = decryptData(resJson.data);
@@ -43,7 +44,7 @@ export function useInfiniteDramaNovaHome() {
   return useInfiniteQuery({
     queryKey: ["dramanova", "home"],
     queryFn: async ({ pageParam = 1 }: { pageParam: number }) => {
-      const res = await fetch(`/api/dramanova/home?page=${pageParam}`);
+      const res = await fetch(withCurrentLang(`/api/dramanova/home?page=${pageParam}`));
       if (!res.ok) throw new Error("Gagal mengambil data home");
       const resJson = await res.json();
       const data: DramaNovaPagedResponse = decryptData(resJson.data);
@@ -64,7 +65,7 @@ export function useDramaNovaSearch(query: string) {
     queryKey: ["dramanova", "search", query],
     queryFn: async () => {
       if (!query) return [];
-      const res = await fetch(`/api/dramanova/search?query=${encodeURIComponent(query)}`);
+      const res = await fetch(withCurrentLang(`/api/dramanova/search?query=${encodeURIComponent(query)}`));
       if (!res.ok) throw new Error("Gagal mengambil data search");
       const resJson = await res.json();
       const data: DramaNovaPagedResponse = decryptData(resJson.data);
@@ -81,7 +82,7 @@ export function useDramaNovaDetail(dramaId: string) {
     queryKey: ["dramanova", "detail", dramaId],
     queryFn: async () => {
       if (!dramaId) throw new Error("ID Drama tidak diberikan");
-      const res = await fetch(`/api/dramanova/detail?dramaId=${encodeURIComponent(dramaId)}`);
+      const res = await fetch(withCurrentLang(`/api/dramanova/detail?dramaId=${encodeURIComponent(dramaId)}`));
       if (!res.ok) throw new Error("Gagal mengambil data detail");
       const resJson = await res.json();
       const responseBody: DramaNovaDetailResponse = decryptData(resJson.data);

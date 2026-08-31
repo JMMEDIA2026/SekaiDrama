@@ -1,6 +1,7 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import type { PineDramaResponse } from "@/types/pinedrama";
 import { decryptData } from "@/lib/crypto";
+import { withCurrentLang } from "@/lib/fetcher";
 
 // Helper: format view count (e.g., 365886615 → "365.9M")
 export function formatViews(views: number): string {
@@ -21,7 +22,7 @@ export function usePineDramaTrending() {
   return useQuery({
     queryKey: ["pinedrama", "trending"],
     queryFn: async () => {
-      const res = await fetch("/api/pinedrama/trending");
+      const res = await fetch(withCurrentLang("/api/pinedrama/trending"));
       if (!res.ok) throw new Error("Gagal mengambil data Trending");
       const resJson = await res.json();
       const data: PineDramaResponse = decryptData(resJson.data);
@@ -38,7 +39,7 @@ export function useInfinitePineDramaForYou() {
   return useInfiniteQuery({
     queryKey: ["pinedrama", "foryou"],
     queryFn: async ({ pageParam = "1" }: { pageParam: string }) => {
-      const res = await fetch(`/api/pinedrama/foryou?cursor=${encodeURIComponent(pageParam)}`);
+      const res = await fetch(withCurrentLang(`/api/pinedrama/foryou?cursor=${encodeURIComponent(pageParam)}`));
       if (!res.ok) throw new Error("Gagal mengambil data Lainnya");
       const resJson = await res.json();
       const data: PineDramaResponse = decryptData(resJson.data);
@@ -60,7 +61,7 @@ export function usePineDramaSearch(query: string) {
     queryKey: ["pinedrama", "search", query],
     queryFn: async () => {
       if (!query) return [];
-      const res = await fetch(`/api/pinedrama/search?query=${encodeURIComponent(query)}`);
+      const res = await fetch(withCurrentLang(`/api/pinedrama/search?query=${encodeURIComponent(query)}`));
       if (!res.ok) throw new Error("Gagal mengambil data search");
       const resJson = await res.json();
       const data = decryptData<any>(resJson.data);
@@ -77,7 +78,7 @@ export function usePineDramaDetail(collectionId: string) {
     queryKey: ["pinedrama", "detail", collectionId],
     queryFn: async () => {
       if (!collectionId) throw new Error("Collection ID tidak diberikan");
-      const res = await fetch(`/api/pinedrama/detail?collection_id=${encodeURIComponent(collectionId)}`);
+      const res = await fetch(withCurrentLang(`/api/pinedrama/detail?collection_id=${encodeURIComponent(collectionId)}`));
       if (!res.ok) throw new Error("Gagal mengambil data detail");
       const resJson = await res.json();
       return decryptData<any>(resJson.data);
@@ -94,7 +95,7 @@ export function usePineDramaEpisode(collectionId: string, episodeNumber: number)
     queryFn: async () => {
       if (!collectionId || !episodeNumber) throw new Error("Parameter tidak lengkap");
       const res = await fetch(
-        `/api/pinedrama/episode?collection_id=${encodeURIComponent(collectionId)}&episodeNumber=${episodeNumber}`
+        withCurrentLang(`/api/pinedrama/episode?collection_id=${encodeURIComponent(collectionId)}&episodeNumber=${episodeNumber}`)
       );
       if (!res.ok) throw new Error("Gagal mengambil data episode");
       const resJson = await res.json();

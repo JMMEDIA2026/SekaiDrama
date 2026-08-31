@@ -1,11 +1,11 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
-import { NextResponse } from "next/server";
+import { safeJson, encryptedResponse, withLang } from "@/lib/api-utils";
+import { NextRequest, NextResponse } from "next/server";
 
 const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/dramabox";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${UPSTREAM_API}/trending`, {
+    const response = await fetch(withLang(`${UPSTREAM_API}/trending`, request), {
       cache: 'no-store',});
 
     if (!response.ok) {

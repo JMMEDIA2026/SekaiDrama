@@ -1,10 +1,10 @@
 
-import { encryptedResponse, safeJson } from "@/lib/api-utils";
-import { NextResponse } from "next/server";
+import { encryptedResponse, safeJson, withLang } from "@/lib/api-utils";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api"}/freereels/animepage`, {
+    const res = await fetch(withLang(`${process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api"}/freereels/animepage`, request), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
