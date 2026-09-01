@@ -1,8 +1,9 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse } from "@/lib/api-utils";
 import { optimizeCover } from "@/lib/image-utils";
+import { queryDetail } from "@/lib/shortmax-client";
 import { NextRequest } from "next/server";
 
-const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/shortmax";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,30 +17,26 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${UPSTREAM_API}/detail?shortPlayId=${shortPlayId}`, {
-      cache: 'no-store',
-    });
+    const res = await queryDetail(Number(shortPlayId));
 
-    if (!response.ok) {
+    if (res.code !== 0 || !res.data) {
       return encryptedResponse(
         { success: false, error: "Failed to fetch detail" }
       );
     }
 
-    const raw = await safeJson<any>(response);
-    const data = raw.data || raw;
-
-    const labels = (data.labelResponseList || []).map((l: any) => l.labelName);
+    const data = res.data;
+    const labels = (data.labelList || []).map((l: any) => l.displayName);
 
     return encryptedResponse({
       success: true,
-      shortPlayId: data.id,
+      shortPlayId: data.shortPlayId,
       shortPlayCode: data.shortPlayCode,
       title: data.shortPlayName,
-      cover: optimizeCover(data.picUrl),
-      description: data.summary || data.recommendContent || "",
+      cover: optimizeCover(data.coverId),
+      description: data.summary || "",
       labels,
-      totalEpisodes: data.totalEpisodes || 0,
+      totalEpisodes: (data.episodeList || []).length || data.totalEpisodes || 0,
       updateEpisode: data.updateEpisode || 0,
       lockBegin: data.lockBegin || 0,
       collectNum: data.collectNum || 0,

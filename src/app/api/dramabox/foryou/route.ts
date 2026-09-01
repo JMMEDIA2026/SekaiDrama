@@ -1,30 +1,19 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse } from "@/lib/api-utils";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
-
-const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/dramabox";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = searchParams.get("page") || "1";
-    
-    const response = await fetch(`${UPSTREAM_API}/foryou?page=${page}`, {
-      cache: 'no-store',
-    });
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch data" },
-        { status: response.status }
-      );
-    }
+    const page = parseInt(searchParams.get("page") || "1", 10);
 
-    const data = await safeJson(response);
-    
-    // Filter out items without bookId or bookName to prevent blank cards
-    const filteredData = Array.isArray(data) 
-      ? data.filter((item: any) => item && item.bookId) 
+    // @ts-ignore - JS 직접 호출
+    const { foryouPage } = await import("@/lib/dramabox/dramabox.js");
+    const data = await foryouPage(page);
+
+    const filteredData = Array.isArray(data)
+      ? data.filter((item: any) => item && item.bookId)
       : [];
 
     return encryptedResponse(filteredData);
@@ -36,4 +25,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

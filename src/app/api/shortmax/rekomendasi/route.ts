@@ -1,33 +1,35 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse } from "@/lib/api-utils";
 import { optimizeCover } from "@/lib/image-utils";
+import { queryPage } from "@/lib/shortmax-client";
 
-const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/shortmax";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const response = await fetch(`${UPSTREAM_API}/rekomendasi`, {
-      cache: 'no-store',
-    });
+    // Use a random page to simulate recommendation feed
+    const randomPage = Math.floor(Math.random() * 30) + 1;
+    const res = await queryPage(randomPage, 20);
 
-    if (!response.ok) {
+    if (res.code !== 0 || !res.data) {
       return encryptedResponse({ success: false, data: [] });
     }
 
-    const data = await safeJson<any>(response);
-
-    const dramas = (data.results || []).map((item: any) => ({
+    const list = res.data.list || [];
+    const dramas = list.map((item: any) => ({
       shortPlayId: item.shortPlayId,
-      title: item.name,
-      cover: optimizeCover(item.cover),
+      title: item.shortPlayName,
+      cover: optimizeCover(item.coverId),
       totalEpisodes: item.totalEpisodes || 0,
-      label: item.label || "",
+      label:
+        (item.labelList && item.labelList[0] && item.labelList[0].displayName) ||
+        "",
       collectNum: item.collectNum || 0,
     }));
 
     return encryptedResponse({
       success: true,
       data: dramas,
-      total: data.total || dramas.length,
+      total: res.data.total || dramas.length,
     });
   } catch (error) {
     console.error("ShortMax Rekomendasi Error:", error);

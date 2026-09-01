@@ -1,32 +1,34 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse } from "@/lib/api-utils";
 import { NextRequest, NextResponse } from "next/server";
 
-const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/dramabox";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const classify = searchParams.get("classify") || "terbaru";
-  const page = searchParams.get("page") || "1";
+  let classify = searchParams.get("classify") || "terbaru";
+  const page = parseInt(searchParams.get("page") || "1", 10);
+
+  classify = classify.toLowerCase();
+
+  let classifyCode;
+  if (classify === "terpopuler") {
+    classifyCode = 1;
+  } else if (classify === "terbaru") {
+    classifyCode = 2;
+  } else {
+    return NextResponse.json(
+      { error: "Parameter classify harus terpopuler atau terbaru" },
+      { status: 400 }
+    );
+  }
 
   try {
-    const response = await fetch(
-      `${UPSTREAM_API}/dubindo?classify=${classify}&page=${page}`,
-      { cache: 'no-store',}
-    );
+    // @ts-ignore - JS 직접 호출
+    const { dubindo } = await import("@/lib/dramabox/dramabox.js");
+    const data = await dubindo(classifyCode, page);
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch data" },
-        { status: response.status }
-      );
-    }
-
-    const data = await safeJson(response);
-    
-    // Filter out items without bookId to prevent blank cards
-    // Note: data is directly an array for dubindo
-    const filteredData = Array.isArray(data) 
-      ? data.filter((item: any) => item && item.bookId) 
+    const filteredData = Array.isArray(data)
+      ? data.filter((item: any) => item && item.bookId)
       : [];
 
     return encryptedResponse(filteredData);
@@ -38,4 +40,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

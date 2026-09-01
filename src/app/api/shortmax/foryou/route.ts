@@ -1,28 +1,30 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse } from "@/lib/api-utils";
 import { optimizeCover } from "@/lib/image-utils";
+import { queryPage } from "@/lib/shortmax-client";
 import { NextRequest } from "next/server";
 
-const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/shortmax";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = searchParams.get("page") || "1";
+    const page = parseInt(searchParams.get("page") || "1", 10);
 
-    const response = await fetch(`${UPSTREAM_API}/foryou?page=${page}`, {
-      cache: 'no-store',
-    });
+    const res = await queryPage(page, 20);
 
-    if (!response.ok) {
+    if (res.code !== 0 || !res.data) {
       return encryptedResponse({ success: false, data: [], isEnd: true });
     }
 
-    const data = await safeJson<any>(response);
+    const list = res.data.list || [];
+    const total = res.data.total || 0;
+    const totalPages = Math.ceil(total / 20);
+    const isEnd = page >= totalPages;
 
-    const dramas = (data.results || []).map((item: any) => ({
+    const dramas = list.map((item: any) => ({
       shortPlayId: item.shortPlayId,
-      title: item.name,
-      cover: optimizeCover(item.cover),
+      title: item.shortPlayName,
+      cover: optimizeCover(item.coverId),
       totalEpisodes: item.totalEpisodes || 0,
       playNum: item.playNum || 0,
       summary: item.summary || "",
@@ -31,9 +33,9 @@ export async function GET(request: NextRequest) {
     return encryptedResponse({
       success: true,
       data: dramas,
-      page: Number(page),
-      isEnd: data.isEnd || false,
-      total: data.total || dramas.length,
+      page,
+      isEnd,
+      total,
     });
   } catch (error) {
     console.error("ShortMax ForYou Error:", error);

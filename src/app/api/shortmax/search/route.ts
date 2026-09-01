@@ -1,8 +1,9 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse } from "@/lib/api-utils";
 import { optimizeCover } from "@/lib/image-utils";
+import { searchPage } from "@/lib/shortmax-client";
 import { NextRequest } from "next/server";
 
-const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/shortmax";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,32 +11,28 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get("query");
 
     if (!query) {
-      return encryptedResponse({ success: true, data: [] });
+      return encryptedResponse({ success: true });
     }
 
-    const response = await fetch(
-      `${UPSTREAM_API}/search?query=${encodeURIComponent(query)}`,
-      { cache: 'no-store' }
-    );
+    const res = await searchPage(query, 1, 20);
 
-    if (!response.ok) {
-      return encryptedResponse({ success: true, data: [] });
+    if (res.code !== 0 || !res.data) {
+      return encryptedResponse({ success: true });
     }
 
-    const data = await safeJson<any>(response);
-
-    const results = (data.results || []).map((item: any) => ({
+    const list = res.data.data || [];
+    const results = list.map((item: any) => ({
       shortPlayId: item.shortPlayId,
       shortPlayCode: item.shortPlayCode,
-      title: (item.name || "").replace(/<\/?em>/g, ""),
-      cover: optimizeCover(item.cover),
-      genre: (item.genre || []).map((g: string) => g.replace(/<\/?em>/g, "")),
+      title: (item.shortPlayName || "").replace(/<\/?em>/g, ""),
+      cover: optimizeCover(item.coverId),
+      genre: (item.labelDisplayNames || item.classDisplayNames || []),
     }));
 
     return encryptedResponse({
       success: true,
       data: results,
-      total: data.total || results.length,
+      total: res.data.total || results.length,
     });
   } catch (error) {
     console.error("ShortMax Search Error:", error);

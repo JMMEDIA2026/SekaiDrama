@@ -35,6 +35,12 @@ dramanova_notes.md
 .env
 .env*.local
 
+# sensitive token files
+src/lib/dramabox/token2.json
+
+# temp test scripts
+test-*.mjs
+
 # vercel
 .vercel
 

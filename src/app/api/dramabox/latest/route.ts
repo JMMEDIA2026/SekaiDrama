@@ -1,25 +1,16 @@
-import { safeJson, encryptedResponse } from "@/lib/api-utils";
+import { encryptedResponse } from "@/lib/api-utils";
 import { NextResponse } from "next/server";
 
-const UPSTREAM_API = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.sansekai.my.id/api") + "/dramabox";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const response = await fetch(`${UPSTREAM_API}/latest`, {
-      cache: 'no-store',});
+    // @ts-ignore - JS 직접 호출
+    const { latest } = await import("@/lib/dramabox/dramabox.js");
+    const data = await latest();
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch data" },
-        { status: response.status }
-      );
-    }
-
-    const data = await safeJson(response);
-    
-    // Filter out items without bookId or bookName to prevent blank cards
-    const filteredData = Array.isArray(data) 
-      ? data.filter((item: any) => item && item.bookId) 
+    const filteredData = Array.isArray(data)
+      ? data.filter((item: any) => item && item.bookId)
       : [];
 
     return encryptedResponse(filteredData);
@@ -31,4 +22,3 @@ export async function GET() {
     );
   }
 }
-
