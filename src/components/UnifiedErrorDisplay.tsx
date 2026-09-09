@@ -7,11 +7,11 @@ interface UnifiedErrorDisplayProps {
   retryLabel?: string;
 }
 
-export function UnifiedErrorDisplay({ 
-  message = "Terjadi kesalahan saat memuat data.", 
-  title = "Gagal Memuat",
+export function UnifiedErrorDisplay({
+  message = "데이터를 불러오는 중 오류가 발생했습니다.",
+  title = "불러오기 실패",
   onRetry,
-  retryLabel = "Coba Lagi"
+  retryLabel = "다시 시도"
 }: UnifiedErrorDisplayProps) {
   return (
     <div className="flex flex-col items-center justify-center p-8 md:p-12 text-center space-y-6 bg-[#1a1625] rounded-2xl border border-white/5 mx-auto max-w-4xl w-full">

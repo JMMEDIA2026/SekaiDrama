@@ -12,7 +12,7 @@ interface InfiniteGoodShortSectionProps {
   title?: string;
 }
 
-export function InfiniteGoodShortSection({ title = "Lainnya" }: InfiniteGoodShortSectionProps) {
+export function InfiniteGoodShortSection({ title = "더보기" }: InfiniteGoodShortSectionProps) {
   const {
     data,
     fetchNextPage,
@@ -63,9 +63,9 @@ export function InfiniteGoodShortSection({ title = "Lainnya" }: InfiniteGoodShor
         <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
           {title}
         </h2>
-        <UnifiedErrorDisplay 
-          title={`Gagal Memuat ${title}`}
-          message={error?.message || "Terjadi kesalahan"}
+        <UnifiedErrorDisplay
+          title={`${title} 불러오기 실패`}
+          message={error?.message || "오류가 발생했습니다"}
           onRetry={() => refetch()}
         />
       </section>
@@ -118,13 +118,13 @@ export function InfiniteGoodShortSection({ title = "Lainnya" }: InfiniteGoodShor
         {isFetchingNextPage ? (
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="w-8 h-8 md:w-10 md:h-10 animate-spin text-primary" />
-            <p className="text-sm md:text-base text-muted-foreground font-medium animate-pulse">Memuat lebih banyak...</p>
+            <p className="text-sm md:text-base text-muted-foreground font-medium animate-pulse">더 불러오는 중...</p>
           </div>
         ) : hasNextPage ? (
           <div className="h-4" /> // Invisible trigger
         ) : (
           <div className="mt-8 pt-8 text-center border-t border-white/5 pb-8">
-            <p className="text-sm md:text-base text-muted-foreground font-medium">Semua data telah dimuat</p>
+            <p className="text-sm md:text-base text-muted-foreground font-medium">모든 데이터를 불러왔습니다</p>
           </div>
         )}
       </div>

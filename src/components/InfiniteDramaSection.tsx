@@ -53,8 +53,8 @@ export function InfiniteDramaSection({ title }: InfiniteDramaSectionProps) {
           {title}
         </h2>
         <UnifiedErrorDisplay
-          title={`Gagal Memuat ${title}`}
-          message="Tidak dapat mengambil data drama."
+          title={`${title} 불러오기 실패`}
+          message="드라마 데이터를 불러올 수 없습니다."
           onRetry={() => refetch()}
         />
       </section>
@@ -114,7 +114,7 @@ export function InfiniteDramaSection({ title }: InfiniteDramaSectionProps) {
         ) : hasNextPage ? (
           <div className="h-4" /> // Invisible trigger
         ) : (
-          <p className="text-muted-foreground text-sm">Sudah mencapai akhir daftar</p>
+          <p className="text-muted-foreground text-sm">마지막 항목까지 모두 불러왔습니다</p>
         )}
       </div>
     </section>

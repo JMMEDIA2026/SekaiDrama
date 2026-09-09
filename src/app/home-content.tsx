@@ -52,21 +52,21 @@ export default function HomeContent() {
       {isDramaBox && (
         <div className="container mx-auto px-4 py-6 space-y-8">
           <DramaSection
-            title="Terbaru"
+            title="최신"
             dramas={latestDramas}
             isLoading={loadingLatest}
             error={!!errorLatest}
             onRetry={() => refetchLatest()}
           />
           <DramaSection
-            title="Terpopuler"
+            title="인기"
             dramas={trendingDramas}
             isLoading={loadingTrending}
             error={!!errorTrending}
             onRetry={() => refetchTrending()}
           />
           <DramaSection
-            title="Dubindo"
+            title="더빙판"
             dramas={dubindoDramas}
             isLoading={loadingDubindo}
             error={!!errorDubindo}
@@ -74,7 +74,7 @@ export default function HomeContent() {
           />
 
           {/* Infinite Scroll Section */}
-          <InfiniteDramaSection title="Lainnya" />
+          <InfiniteDramaSection title="더보기" />
         </div>
       )}
 
