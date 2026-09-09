@@ -13,64 +13,59 @@ export interface PlatformInfo {
 
 export const PLATFORMS: PlatformInfo[] = [
   {
-    id: "pinedrama",
-    name: "PineDrama",
-    logo: "/pinedrama.png",
-    apiBase: "/api/pinedrama",
-  },
-  {
     id: "dramabox",
     name: "DramaBox",
     logo: "/dramabox.webp",
     apiBase: "/api/dramabox",
   },
   {
-    id: "reelshort",
-    name: "ReelShort",
-    logo: "/reelshort.webp",
-    apiBase: "/api/reelshort",
+    id: "goodshort",
+    name: "GoodShort",
+    logo: "/goodshort.jpg",
+    apiBase: "/api/goodshort",
   },
-  {
-    id: "shortmax",
-    name: "ShortMax",
-    logo: "/shortmax.webp",
-    apiBase: "/api/shortmax",
-  },
-  // [TEMPORARILY DISABLED] NetShort - Dinonaktifkan sementara karena ada update API dari pihak NetShort.
-  // Platform ini tidak bisa digunakan sampai API baru sudah stabil dan disesuaikan.
-  // TODO: Aktifkan kembali setelah API NetShort yang baru sudah compatible.
+  // [HIDDEN] 요청에 따라 DramaBox, GoodShort 외 플랫폼은 노출하지 않음.
+  // {
+  //   id: "pinedrama",
+  //   name: "PineDrama",
+  //   logo: "/pinedrama.png",
+  //   apiBase: "/api/pinedrama",
+  // },
+  // {
+  //   id: "reelshort",
+  //   name: "ReelShort",
+  //   logo: "/reelshort.webp",
+  //   apiBase: "/api/reelshort",
+  // },
+  // {
+  //   id: "shortmax",
+  //   name: "ShortMax",
+  //   logo: "/shortmax.webp",
+  //   apiBase: "/api/shortmax",
+  // },
   // {
   //   id: "netshort",
   //   name: "NetShort",
   //   logo: "/netshort.webp",
   //   apiBase: "/api/netshort",
   // },
-
-  {
-    id: "melolo",
-    name: "Melolo",
-    logo: "/melolo.webp",
-    apiBase: "/api/melolo",
-  },
-
-  {
-    id: "freereels",
-    name: "FreeReels",
-    logo: "/freereels.webp",
-    apiBase: "/api/freereels",
-  },
-  {
-    id: "dramanova",
-    name: "DramaNova",
-    logo: "/dramanova.png",
-    apiBase: "/api/dramanova",
-  },
-  // [TEMPORARILY DISABLED] GoodShort - Dinonaktifkan sementara.
   // {
-  //   id: "goodshort",
-  //   name: "GoodShort",
-  //   logo: "/goodshort.jpg",
-  //   apiBase: "/api/goodshort",
+  //   id: "melolo",
+  //   name: "Melolo",
+  //   logo: "/melolo.webp",
+  //   apiBase: "/api/melolo",
+  // },
+  // {
+  //   id: "freereels",
+  //   name: "FreeReels",
+  //   logo: "/freereels.webp",
+  //   apiBase: "/api/freereels",
+  // },
+  // {
+  //   id: "dramanova",
+  //   name: "DramaNova",
+  //   logo: "/dramanova.png",
+  //   apiBase: "/api/dramanova",
   // },
 ];
 

@@ -14,6 +14,8 @@ import { PineDramaHome } from "@/components/PineDramaHome";
 import { useLatestDramas, useTrendingDramas, useDubindoDramas } from "@/hooks/useDramas";
 import { usePlatform } from "@/hooks/usePlatform";
 import { InfiniteDramaSection } from "@/components/InfiniteDramaSection";
+import { AdSlot } from "@/components/AdSlot";
+import { AdBannerStrip } from "@/components/AdBannerStrip";
 
 export default function HomeContent() {
   const { isPineDrama, isDramaBox, isReelShort, isShortMax, isNetShort, isMelolo, isFreeReels, isDramaNova, isGoodShort } = usePlatform();
@@ -31,6 +33,12 @@ export default function HomeContent() {
         <div className="container mx-auto">
           <PlatformSelector />
         </div>
+      </div>
+
+      {/* Ad Slot - Home Top */}
+      <div className="container mx-auto px-4 pt-6 space-y-4">
+        <AdBannerStrip />
+        <AdSlot placement="home_top" />
       </div>
 
       {/* PineDrama Content */}
@@ -120,6 +128,11 @@ export default function HomeContent() {
           <GoodShortHome />
         </div>
       )}
+
+      {/* Ad Slot - Home Bottom */}
+      <div className="container mx-auto px-4 pb-6">
+        <AdSlot placement="home_bottom" />
+      </div>
     </main>
   );
 }

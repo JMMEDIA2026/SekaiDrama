@@ -4,7 +4,8 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, X, Play } from "lucide-react";
+import { Search, X, Play, LogIn, LogOut, ShieldCheck } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { useSearchDramas } from "@/hooks/useDramas";
 import { useReelShortSearch } from "@/hooks/useReelShort";
 import { useNetShortSearch } from "@/hooks/useNetShort";
@@ -28,6 +29,9 @@ export function Header() {
 
   // Platform context
   const { isPineDrama, isDramaBox, isReelShort, isShortMax, isNetShort, isMelolo, isFreeReels, isDramaNova, isGoodShort, platformInfo } = usePlatform();
+
+  // Auth context
+  const { user, isAdmin, logout } = useAuth();
 
   // Search based on platform
   const { data: dramaBoxResults, isLoading: isSearchingDramaBox } = useSearchDramas(
@@ -122,11 +126,11 @@ export function Header() {
               <Play className="w-5 h-5 text-white fill-white" />
             </div>
             <span className="font-display font-bold text-xl gradient-text">
-              SekaiDrama
+              JM Drama
             </span>
           </Link>
 
-          {/* Search Button Only - No Nav Links */}
+          {/* Search + Auth */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchOpen(true)}
@@ -135,6 +139,38 @@ export function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
+
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    관리자
+                  </Link>
+                )}
+                <span className="hidden sm:inline text-sm text-muted-foreground">
+                  {user.username}
+                </span>
+                <button
+                  onClick={() => logout.mutate()}
+                  className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
+                  aria-label="로그아웃"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
+                aria-label="로그인"
+              >
+                <LogIn className="w-5 h-5" />
+              </Link>
+            )}
           </div>
         </div>
       </div>
