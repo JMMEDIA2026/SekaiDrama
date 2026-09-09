@@ -42,7 +42,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>회원가입</CardTitle>
-          <CardDescription>SekaiDrama 계정을 만들어보세요.</CardDescription>
+          <CardDescription>JM Drama 계정을 만들어보세요.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

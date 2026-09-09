@@ -8,8 +8,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "SekaiDrama - 숏드라마 스트리밍",
-  description: "SekaiDrama에서 무료, 광고 없이 숏드라마를 감상하세요.",
+  title: "JM Drama - 숏드라마 스트리밍",
+  description: "JM Drama에서 무료, 광고 없이 숏드라마를 감상하세요.",
 };
 
 export default function RootLayout({
