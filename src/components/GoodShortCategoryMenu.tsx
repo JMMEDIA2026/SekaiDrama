@@ -5,34 +5,21 @@ import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { GOODSHORT_GENRES, GOODSHORT_TAGS } from "@/lib/goodshort-taxonomy";
 
 interface GoodShortCategoryMenuProps {
-  selectedGenre: string | null;
-  selectedTag: string | null;
-  onSelectGenre: (value: string | null) => void;
-  onSelectTag: (value: string | null) => void;
+  selected: string | null;
+  onSelect: (value: string | null) => void;
 }
 
-export function GoodShortCategoryMenu({
-  selectedGenre,
-  selectedTag,
-  onSelectGenre,
-  onSelectTag,
-}: GoodShortCategoryMenuProps) {
+export function GoodShortCategoryMenu({ selected, onSelect }: GoodShortCategoryMenuProps) {
   const [showTags, setShowTags] = useState(false);
-  const hasFilter = !!selectedGenre || !!selectedTag;
-
-  const clearFilter = () => {
-    onSelectGenre(null);
-    onSelectTag(null);
-  };
 
   return (
     <div className="space-y-3">
       {/* 카테고리(장르) */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
         <button
-          onClick={clearFilter}
+          onClick={() => onSelect(null)}
           className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            !hasFilter
+            !selected
               ? "bg-primary text-primary-foreground"
               : "bg-muted/50 text-muted-foreground hover:bg-muted"
           }`}
@@ -41,24 +28,21 @@ export function GoodShortCategoryMenu({
         </button>
         {GOODSHORT_GENRES.map((genre) => (
           <button
-            key={genre.value}
-            onClick={() => {
-              onSelectGenre(genre.value);
-              onSelectTag(null);
-            }}
+            key={genre}
+            onClick={() => onSelect(genre)}
             className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              selectedGenre === genre.value
+              selected === genre
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted/50 text-muted-foreground hover:bg-muted"
             }`}
           >
-            {genre.ko}
+            {genre}
           </button>
         ))}
         <button
           onClick={() => setShowTags((prev) => !prev)}
           className={`shrink-0 flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            showTags || selectedTag
+            showTags || (selected && !GOODSHORT_GENRES.includes(selected))
               ? "bg-primary/20 text-primary"
               : "bg-muted/50 text-muted-foreground hover:bg-muted"
           }`}
@@ -73,36 +57,31 @@ export function GoodShortCategoryMenu({
         <div className="flex flex-wrap gap-2 p-4 rounded-2xl bg-muted/30 max-h-72 overflow-y-auto animate-fade-up">
           {GOODSHORT_TAGS.map((tag) => (
             <button
-              key={tag.value}
+              key={tag}
               onClick={() => {
-                onSelectTag(tag.value);
-                onSelectGenre(null);
+                onSelect(tag);
                 setShowTags(false);
               }}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                selectedTag === tag.value
+                selected === tag
                   ? "bg-primary text-primary-foreground"
                   : "bg-pink-500/10 text-pink-600 dark:text-pink-400 hover:bg-pink-500/20"
               }`}
             >
-              {tag.ko}
+              {tag}
             </button>
           ))}
         </div>
       )}
 
       {/* 선택된 필터 표시 */}
-      {hasFilter && (
+      {selected && (
         <div className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">
-            필터:{" "}
-            <span className="font-medium text-foreground">
-              {GOODSHORT_GENRES.find((g) => g.value === selectedGenre)?.ko ??
-                GOODSHORT_TAGS.find((t) => t.value === selectedTag)?.ko}
-            </span>
+            필터: <span className="font-medium text-foreground">{selected}</span>
           </span>
           <button
-            onClick={clearFilter}
+            onClick={() => onSelect(null)}
             className="p-1 rounded-full hover:bg-muted transition-colors"
             aria-label="필터 해제"
           >

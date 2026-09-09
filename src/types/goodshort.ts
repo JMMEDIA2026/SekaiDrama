@@ -31,6 +31,8 @@ export interface GoodShortItem {
   cornerText?: string;
   showLike: boolean;
   inLibrary: boolean;
+  language?: string; // e.g. "KOREAN", "BAHASA_INDONESIA" (검색 결과에만 포함됨)
+  languageDisplay?: string;
 }
 
 export interface GoodShortRecord {
