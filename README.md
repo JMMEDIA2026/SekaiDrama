@@ -77,6 +77,32 @@ src/
 └── styles/                 # Global CSS & Tailwind configuration
 ```
 
+## Member & Admin (Manajemen Iklan)
+
+Website ini sekarang mendukung:
+- Pendaftaran & login pengunjung (`/signup`, `/login`)
+- Dashboard admin di `/admin/ads` untuk mengelola: pop-up donasi QRIS (judul/deskripsi/gambar/on-off), banner gambar, dan slot iklan umum (mis. Google AdSense — cukup tempel script/HTML-nya)
+
+Fitur ini butuh database Postgres, jadi ada langkah setup tambahan:
+
+### 1. Hubungkan Database
+Buat/hubungkan **Vercel Postgres** (atau Neon/Postgres kompatibel lainnya) ke project di dashboard Vercel. Vercel akan otomatis mengisi env var `POSTGRES_URL`. Untuk pengembangan lokal, salin nilainya ke `.env` (lihat `.env.example`).
+
+### 2. Jalankan Migrasi Skema
+```bash
+npm run db:migrate
+```
+
+### 3. Buat Akun Admin
+Password **tidak** disimpan di kode — isi lewat environment variable saat menjalankan perintah seed, lalu jalankan sekali saja:
+```bash
+ADMIN_USERNAME=nkjoy ADMIN_EMAIL=email-anda@contoh.com ADMIN_PASSWORD=isi-password-anda npm run db:seed
+```
+Password otomatis di-hash sebelum disimpan ke database. Setelah sukses, login di `/login` dengan aidi & password tersebut, lalu buka `/admin/ads` untuk mulai mengatur iklan.
+
+### 4. Set JWT_SECRET
+Isi `JWT_SECRET` di environment variables dengan string acak yang panjang (contoh: `openssl rand -base64 32`) — dipakai untuk menandatangani sesi login. Tanpa ini, login/signup akan gagal.
+
 ## Kustomisasi
 
 ### Menghapus Popup Donasi QRIS
