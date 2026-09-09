@@ -20,9 +20,9 @@ export function GoodShortSection({ title, dramas, isLoading, error, onRetry }: G
         <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">
           {title}
         </h2>
-        <UnifiedErrorDisplay 
-          title={`Gagal Memuat ${title}`}
-          message="Tidak dapat mengambil data drama."
+        <UnifiedErrorDisplay
+          title={`${title} 불러오기 실패`}
+          message="드라마 데이터를 불러올 수 없습니다."
           onRetry={onRetry}
         />
       </section>

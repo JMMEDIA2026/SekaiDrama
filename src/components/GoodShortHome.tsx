@@ -43,20 +43,20 @@ export function GoodShortHome() {
       ) : (
         <>
           <GoodShortSection
-            title="Terbaru"
+            title="최신"
             dramas={latestData}
             isLoading={loadingLatest}
             error={!!errorLatest}
             onRetry={() => refetchLatest()}
           />
           <GoodShortSection
-            title="Trending"
+            title="인기"
             dramas={trendingData}
             isLoading={loadingTrending}
             error={!!errorTrending}
             onRetry={() => refetchTrending()}
           />
-          <InfiniteGoodShortSection title="Lainnya" />
+          <InfiniteGoodShortSection title="더보기" />
         </>
       )}
     </div>

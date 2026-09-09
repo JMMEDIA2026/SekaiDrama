@@ -14,7 +14,7 @@ export function useGoodShortLatest() {
     queryKey: ["goodshort", "latest"],
     queryFn: async () => {
       const res = await fetch("/api/goodshort/latest");
-      if (!res.ok) throw new Error("Gagal mengambil data Terbaru");
+      if (!res.ok) throw new Error("최신 데이터를 불러오지 못했습니다");
       const resJson = await res.json();
       const data: GoodShortRankListResponse = decryptData(resJson.data);
       return extractRankItems(data);
@@ -29,7 +29,7 @@ export function useGoodShortTrending() {
     queryKey: ["goodshort", "trending"],
     queryFn: async () => {
       const res = await fetch("/api/goodshort/trending");
-      if (!res.ok) throw new Error("Gagal mengambil data Trending");
+      if (!res.ok) throw new Error("인기 데이터를 불러오지 못했습니다");
       const resJson = await res.json();
       const data: GoodShortRankListResponse = decryptData(resJson.data);
       return extractRankItems(data);
@@ -44,7 +44,7 @@ export function useInfiniteGoodShortForYou() {
     queryKey: ["goodshort", "foryou"],
     queryFn: async ({ pageParam = 1 }: { pageParam: number }) => {
       const res = await fetch(`/api/goodshort/foryou?page=${pageParam}`);
-      if (!res.ok) throw new Error("Gagal mengambil data For You");
+      if (!res.ok) throw new Error("데이터를 불러오지 못했습니다");
       const resJson = await res.json();
       const data: GoodShortForYouResponse = decryptData(resJson.data);
       return data;
@@ -70,7 +70,7 @@ export function useGoodShortSearch(query: string) {
     queryFn: async () => {
       if (!query) return [];
       const res = await fetch(`/api/goodshort/search?query=${encodeURIComponent(query)}`);
-      if (!res.ok) throw new Error("Gagal mengambil data search");
+      if (!res.ok) throw new Error("검색 데이터를 불러오지 못했습니다");
       const resJson = await res.json();
       const data = decryptData<any>(resJson.data);
       return data?.data?.searchResult?.records || [];
@@ -87,7 +87,7 @@ export function useGoodShortDetail(bookId: string) {
     queryFn: async () => {
       if (!bookId) throw new Error("Book ID tidak diberikan");
       const res = await fetch(`/api/goodshort/detail?bookId=${encodeURIComponent(bookId)}`);
-      if (!res.ok) throw new Error("Gagal mengambil data detail");
+      if (!res.ok) throw new Error("상세 데이터를 불러오지 못했습니다");
       const resJson = await res.json();
       const data = decryptData<any>(resJson.data);
       return data?.data;
@@ -104,7 +104,7 @@ export function useGoodShortEpisodes(bookId: string) {
     queryFn: async () => {
       if (!bookId) throw new Error("Book ID tidak diberikan");
       const res = await fetch(`/api/goodshort/allepisode?bookId=${encodeURIComponent(bookId)}`);
-      if (!res.ok) throw new Error("Gagal mengambil data episode");
+      if (!res.ok) throw new Error("에피소드 데이터를 불러오지 못했습니다");
       const resJson = await res.json();
       const data = decryptData<any>(resJson.data);
       return data?.data;

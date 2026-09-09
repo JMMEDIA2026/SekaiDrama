@@ -61,8 +61,8 @@ export function GoodShortCatalogSection({ title, genre, tag }: GoodShortCatalogS
       <section>
         <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-4">{title}</h2>
         <UnifiedErrorDisplay
-          title={`Gagal Memuat ${title}`}
-          message={error?.message || "Terjadi kesalahan"}
+          title={`${title} 불러오기 실패`}
+          message={error?.message || "오류가 발생했습니다"}
           onRetry={() => refetch()}
         />
       </section>

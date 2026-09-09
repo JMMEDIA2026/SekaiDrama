@@ -32,7 +32,7 @@ export function Footer() {
           </ul> */}
 
           <p className="text-sm text-muted-foreground text-center">
-            API yang digunakan:{" "}
+            사용된 API:{" "}
             <a 
                   href="https://api.sansekai.my.id" 
                   target="_blank" 
