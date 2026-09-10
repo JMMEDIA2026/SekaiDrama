@@ -237,6 +237,32 @@
     }
   }
 
+  .animate-logo-glow {
+    animation: logoGlow 2.5s ease-in-out infinite;
+  }
+
+  .animate-logo-float {
+    animation: logoFloat 2.5s ease-in-out infinite;
+  }
+
+  @keyframes logoGlow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.5);
+    }
+    50% {
+      box-shadow: 0 0 0 6px hsl(var(--primary) / 0);
+    }
+  }
+
+  @keyframes logoFloat {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-2px) rotate(-6deg);
+    }
+  }
+
   .animation-delay-100 {
     animation-delay: 100ms;
   }

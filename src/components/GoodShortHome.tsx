@@ -6,11 +6,9 @@ import { InfiniteGoodShortSection } from "./InfiniteGoodShortSection";
 import { GoodShortCategoryMenu } from "./GoodShortCategoryMenu";
 import { GoodShortCatalogSection } from "./GoodShortCatalogSection";
 import { useGoodShortLatest, useGoodShortTrending } from "@/hooks/useGoodShort";
-import { findGenreLabel, findTagLabel } from "@/lib/goodshort-taxonomy";
 
 export function GoodShortHome() {
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
 
   const {
     data: latestData,
@@ -26,20 +24,12 @@ export function GoodShortHome() {
     refetch: refetchTrending,
   } = useGoodShortTrending();
 
-  const hasFilter = !!selectedGenre || !!selectedTag;
-  const filterLabel = findGenreLabel(selectedGenre) ?? findTagLabel(selectedTag) ?? "결과";
-
   return (
     <div className="space-y-8 animate-fade-up">
-      <GoodShortCategoryMenu
-        selectedGenre={selectedGenre}
-        selectedTag={selectedTag}
-        onSelectGenre={setSelectedGenre}
-        onSelectTag={setSelectedTag}
-      />
+      <GoodShortCategoryMenu selected={selected} onSelect={setSelected} />
 
-      {hasFilter ? (
-        <GoodShortCatalogSection title={filterLabel} genre={selectedGenre} tag={selectedTag} />
+      {selected ? (
+        <GoodShortCatalogSection title={selected} query={selected} />
       ) : (
         <>
           <GoodShortSection
