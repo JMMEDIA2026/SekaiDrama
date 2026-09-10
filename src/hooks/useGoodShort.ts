@@ -1,6 +1,7 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import type { GoodShortRankListResponse, GoodShortForYouResponse, GoodShortItem } from "@/types/goodshort";
 import { decryptData } from "@/lib/crypto";
+import { GOODSHORT_KOREAN_FEED_QUERIES } from "@/lib/goodshort-taxonomy";
 
 // Helper: Extract items from the rank list response (data -> records[0] -> items)
 function extractRankItems(data: GoodShortRankListResponse): GoodShortItem[] {
@@ -60,6 +61,40 @@ export function useInfiniteGoodShortForYou() {
       }
       return undefined;
     },
+  });
+}
+
+// 홈 화면용: 검색 API가 실제 한국어 원작으로 매칭하는 검색어 여러 개를 동시에 조회해
+// 한국어(language: KOREAN) 결과만 모아 중복 제거한 뒤 반환. 최신/인기 랭킹 API는
+// 언어 필터를 지원하지 않아 항상 인도네시아어 카탈로그만 나오기 때문에 만든 별도 피드.
+export function useGoodShortKoreanFeed() {
+  return useQuery({
+    queryKey: ["goodshort", "korean-feed"],
+    queryFn: async () => {
+      const results = await Promise.all(
+        GOODSHORT_KOREAN_FEED_QUERIES.map(async (query) => {
+          try {
+            const res = await fetch(`/api/goodshort/search?query=${encodeURIComponent(query)}`);
+            if (!res.ok) return [];
+            const resJson = await res.json();
+            const data = decryptData<any>(resJson.data);
+            return (data?.data?.searchResult?.records || []) as GoodShortItem[];
+          } catch {
+            return [];
+          }
+        })
+      );
+
+      const seen = new Set<string>();
+      const merged: GoodShortItem[] = [];
+      for (const item of results.flat()) {
+        if (item.language !== "KOREAN" || seen.has(item.bookId)) continue;
+        seen.add(item.bookId);
+        merged.push(item);
+      }
+      return merged;
+    },
+    staleTime: 5 * 60 * 1000,
   });
 }
 
