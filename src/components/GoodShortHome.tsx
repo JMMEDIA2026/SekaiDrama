@@ -5,10 +5,17 @@ import { GoodShortSection } from "./GoodShortSection";
 import { InfiniteGoodShortSection } from "./InfiniteGoodShortSection";
 import { GoodShortCategoryMenu } from "./GoodShortCategoryMenu";
 import { GoodShortCatalogSection } from "./GoodShortCatalogSection";
-import { useGoodShortLatest, useGoodShortTrending } from "@/hooks/useGoodShort";
+import { useGoodShortLatest, useGoodShortTrending, useGoodShortKoreanFeed } from "@/hooks/useGoodShort";
 
 export function GoodShortHome() {
   const [selected, setSelected] = useState<string | null>(null);
+
+  const {
+    data: koreanData,
+    isLoading: loadingKorean,
+    error: errorKorean,
+    refetch: refetchKorean,
+  } = useGoodShortKoreanFeed();
 
   const {
     data: latestData,
@@ -32,6 +39,13 @@ export function GoodShortHome() {
         <GoodShortCatalogSection title={selected} query={selected} />
       ) : (
         <>
+          <GoodShortSection
+            title="한국 드라마"
+            dramas={koreanData}
+            isLoading={loadingKorean}
+            error={!!errorKorean}
+            onRetry={() => refetchKorean()}
+          />
           <GoodShortSection
             title="최신"
             dramas={latestData}
