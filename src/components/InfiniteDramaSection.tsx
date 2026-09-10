@@ -6,6 +6,7 @@ import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { useInfiniteForYouDramas } from "@/hooks/useDramas";
 import { Loader2 } from "lucide-react";
+import { buildPrefixSlug } from "@/lib/slug";
 
 interface InfiniteDramaSectionProps {
   title: string;
@@ -92,7 +93,7 @@ export function InfiniteDramaSection({ title }: InfiniteDramaSectionProps) {
                index={index}
                title={drama.bookName}
                cover={drama.coverWap || drama.cover || ""}
-               link={`/detail/dramabox/${drama.bookId}`}
+               link={`/detail/dramabox/${buildPrefixSlug(drama.bookId, drama.bookName)}`}
                episodes={drama.chapterCount}
                topLeftBadge={drama.corner ? {
                  text: drama.corner.name,

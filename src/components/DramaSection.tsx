@@ -4,6 +4,7 @@ import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton"; // Import skeleton
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import type { Drama } from "@/types/drama";
+import { buildPrefixSlug } from "@/lib/slug";
 
 interface DramaSectionProps {
   title: string;
@@ -63,7 +64,7 @@ export function DramaSection({ title, dramas, isLoading, error, onRetry }: Drama
               index={index}
               title={drama.bookName}
               cover={drama.coverWap || drama.cover || ""}
-              link={`/detail/dramabox/${drama.bookId}`}
+              link={`/detail/dramabox/${buildPrefixSlug(drama.bookId, drama.bookName)}`}
               episodes={drama.chapterCount}
               topLeftBadge={drama.corner ? {
                 text: drama.corner.name,

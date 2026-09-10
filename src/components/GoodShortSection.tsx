@@ -4,6 +4,7 @@ import { UnifiedMediaCard } from "./UnifiedMediaCard";
 import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import type { GoodShortItem } from "@/types/goodshort";
+import { buildSuffixSlug } from "@/lib/slug";
 
 interface GoodShortSectionProps {
   title: string;
@@ -56,7 +57,7 @@ export function GoodShortSection({ title, dramas, isLoading, error, onRetry }: G
             index={index}
             title={drama.bookName}
             cover={drama.cover || ""}
-            link={`/detail/goodshort/${drama.bookId}`}
+            link={`/detail/goodshort/${buildSuffixSlug(drama.bookId, drama.bookName)}`}
             episodes={drama.chapterCount}
 
             topRightBadge={drama.viewCountDisplay ? {

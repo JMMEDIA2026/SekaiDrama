@@ -19,6 +19,7 @@ import { usePlatform } from "@/hooks/usePlatform";
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePathname } from "next/navigation";
 import { optimizeThumb } from "@/lib/image-utils";
+import { buildPrefixSlug, buildSuffixSlug } from "@/lib/slug";
 
 export function Header() {
   const pathname = usePathname();
@@ -223,7 +224,7 @@ export function Header() {
                     {searchResults.map((drama: any, index: number) => (
                       <Link
                         key={drama.bookId}
-                        href={`/detail/dramabox/${drama.bookId}`}
+                        href={`/detail/dramabox/${buildPrefixSlug(drama.bookId, drama.bookName)}`}
                         onClick={handleSearchClose}
                         className="flex gap-4 p-4 rounded-2xl bg-card hover:bg-muted transition-all text-left animate-fade-up overflow-hidden"
                         style={{ animationDelay: `${index * 50}ms` }}
@@ -521,7 +522,7 @@ export function Header() {
                     {searchResults.map((book: any, index: number) => (
                       <Link
                         key={book.bookId}
-                        href={`/detail/goodshort/${book.bookId}`}
+                        href={`/detail/goodshort/${buildSuffixSlug(book.bookId, book.bookName)}`}
                         onClick={handleSearchClose}
                         className="flex gap-4 p-4 rounded-2xl bg-card hover:bg-muted transition-all text-left animate-fade-up overflow-hidden"
                         style={{ animationDelay: `${index * 50}ms` }}
