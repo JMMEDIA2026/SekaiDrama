@@ -7,6 +7,7 @@ import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { useInfiniteGoodShortForYou } from "@/hooks/useGoodShort";
 import { Loader2 } from "lucide-react";
 import type { GoodShortItem } from "@/types/goodshort";
+import { buildSuffixSlug } from "@/lib/slug";
 
 interface InfiniteGoodShortSectionProps {
   title?: string;
@@ -102,7 +103,7 @@ export function InfiniteGoodShortSection({ title = "더보기" }: InfiniteGoodSh
             index={index}
             title={drama.bookName}
             cover={drama.cover || ""}
-            link={`/detail/goodshort/${drama.bookId}`}
+            link={`/detail/goodshort/${buildSuffixSlug(drama.bookId, drama.bookName)}`}
             episodes={drama.chapterCount}
 
             topRightBadge={drama.viewCountDisplay ? {

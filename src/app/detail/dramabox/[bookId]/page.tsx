@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import type { DramaDetailDirect, DramaDetailResponseLegacy } from "@/types/drama";
 import { optimizeBg, optimizePoster } from "@/lib/image-utils";
+import { extractIdFromPrefixSlug } from "@/lib/slug";
 
 // Helper to check if response is new format
 function isDirectFormat(data: unknown): data is DramaDetailDirect {
@@ -21,7 +22,7 @@ function isLegacyFormat(data: unknown): data is DramaDetailResponseLegacy {
 
 export default function DramaBoxDetailPage() {
   const params = useParams<{ bookId: string }>();
-  const bookId = params.bookId;
+  const bookId = extractIdFromPrefixSlug(params.bookId || "");
   const router = useRouter();
   const { data, isLoading, error } = useDramaDetail(bookId || "");
 

@@ -5,6 +5,7 @@ import { UnifiedMediaCardSkeleton } from "./UnifiedMediaCardSkeleton";
 import { UnifiedErrorDisplay } from "./UnifiedErrorDisplay";
 import { useGoodShortSearch } from "@/hooks/useGoodShort";
 import type { GoodShortItem } from "@/types/goodshort";
+import { buildSuffixSlug } from "@/lib/slug";
 
 interface GoodShortCatalogSectionProps {
   title: string;
@@ -63,7 +64,7 @@ export function GoodShortCatalogSection({ title, query }: GoodShortCatalogSectio
               index={index}
               title={drama.bookName}
               cover={drama.cover || ""}
-              link={`/detail/goodshort/${drama.bookId}`}
+              link={`/detail/goodshort/${buildSuffixSlug(drama.bookId, drama.bookName)}`}
               episodes={drama.chapterCount}
               topLeftBadge={
                 drama.language === "KOREAN" ? { text: "한국어", color: "#E52E2E" } : null
