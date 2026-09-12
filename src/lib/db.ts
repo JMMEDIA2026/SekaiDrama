@@ -1,4 +1,40 @@
-import { sql } from "@vercel/postgres";
+import { Pool, type QueryResultRow } from "pg";
+
+// 표준 Postgres(로컬 Postgres, Docker, Neon, Vercel Postgres 등)에 연결합니다.
+// POSTGRES_URL 예시: postgres://postgres:비밀번호@localhost:5433/postgres
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+});
+
+export interface SqlResult<T extends QueryResultRow = QueryResultRow> {
+  rows: T[];
+}
+
+async function runQuery<T extends QueryResultRow = QueryResultRow>(
+  text: string,
+  values: unknown[] = []
+): Promise<SqlResult<T>> {
+  const result = await pool.query<T>(text, values);
+  return { rows: result.rows };
+}
+
+// @vercel/postgres의 `sql` 태그드 템플릿과 동일한 방식으로 쓸 수 있도록 만든 래퍼.
+// 예: await sql`SELECT * FROM users WHERE id = ${id}`
+function sql<T extends QueryResultRow = QueryResultRow>(
+  strings: TemplateStringsArray,
+  ...values: unknown[]
+): Promise<SqlResult<T>> {
+  let text = strings[0];
+  for (let i = 0; i < values.length; i++) {
+    text += `$${i + 1}${strings[i + 1]}`;
+  }
+  return runQuery<T>(text, values);
+}
+
+sql.query = <T extends QueryResultRow = QueryResultRow>(
+  text: string,
+  values: unknown[] = []
+): Promise<SqlResult<T>> => runQuery<T>(text, values);
 
 export { sql };
 

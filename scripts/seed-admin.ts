@@ -1,6 +1,6 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
-import { sql } from "@vercel/postgres";
+import { sql } from "../src/lib/db";
 
 // 관리자 계정을 생성/갱신합니다. 비밀번호를 코드에 남기지 않기 위해
 // ADMIN_USERNAME / ADMIN_EMAIL / ADMIN_PASSWORD 환경변수로만 값을 받습니다.

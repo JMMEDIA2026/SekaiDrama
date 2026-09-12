@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { sql } from "@vercel/postgres";
+import { sql } from "../src/lib/db";
 
 async function main() {
   const schemaPath = join(process.cwd(), "db", "schema.sql");
