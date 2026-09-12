@@ -6,11 +6,11 @@ import type { QrisPopupSettings } from "@/types/ads";
 
 const FALLBACK_SETTINGS: QrisPopupSettings = {
   enabled: true,
-  title: "Dukung Penambahan Platform Drama Lain!",
+  title: "다른 플랫폼 추가를 응원해주세요!",
   description:
-    "Donasi kamu sangat berarti untuk menambah platform drama lain dan membayar tagihan bulanan https://drama.sansekai.my.id (SekaiDrama) agar tetap aktif.",
+    "여러분의 후원은 다른 드라마 플랫폼을 추가하고 서버 운영비를 유지하는 데 큰 힘이 됩니다.",
   imageUrl: "/qris.jpg",
-  footnote: "Yuk, dukung kami dengan scan QRIS di atas!",
+  footnote: "위 QR코드를 스캔해서 후원해주세요!",
   countdownSeconds: 10,
 };
 
@@ -96,10 +96,10 @@ export default function QrisDonationPopup() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Tutup dalam {countdown}s
+                {countdown}초 후 닫기
               </>
             ) : (
-              "Lanjut Nonton"
+              "계속 시청하기"
             )}
           </button>
         </div>

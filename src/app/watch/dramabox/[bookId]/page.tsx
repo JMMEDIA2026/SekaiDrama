@@ -224,8 +224,8 @@ export default function DramaBoxWatchPage() {
       <main className="fixed inset-0 bg-black flex flex-col items-center justify-center space-y-4">
         <Loader2 className="w-12 h-12 animate-spin text-primary" />
         <div className="text-center space-y-2">
-            <h3 className="text-white font-medium text-lg">Memuat video...</h3>
-            <p className="text-white/60 text-sm">Mohon tunggu sebentar, data sedang diambil.</p>
+            <h3 className="text-white font-medium text-lg">영상을 불러오는 중...</h3>
+            <p className="text-white/60 text-sm">잠시만 기다려주세요, 데이터를 가져오고 있습니다.</p>
         </div>
       </main>
     );
@@ -236,9 +236,9 @@ export default function DramaBoxWatchPage() {
     return (
       <main className="fixed inset-0 bg-black flex flex-col items-center justify-center p-4">
         <AlertCircle className="w-12 h-12 text-destructive mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-4">Drama tidak ditemukan</h2>
+        <h2 className="text-2xl font-bold text-white mb-4">드라마를 찾을 수 없습니다</h2>
         <Link href="/" className="text-primary hover:underline">
-          Kembali ke beranda
+          홈으로 돌아가기
         </Link>
       </main>
     );
@@ -266,7 +266,7 @@ export default function DramaBoxWatchPage() {
               {book.bookName}
             </h1>
             <p className="text-white/80 text-xs drop-shadow-md">
-              {currentEpisodeData?.chapterName || `Episode ${currentEpisode + 1}`}
+              {currentEpisodeData?.chapterName || `${currentEpisode + 1}화`}
             </p>
           </div>
 
@@ -360,9 +360,9 @@ export default function DramaBoxWatchPage() {
           <div className="fixed inset-y-0 right-0 w-72 bg-zinc-900 z-[70] overflow-y-auto border-l border-white/10 shadow-2xl animate-in slide-in-from-right">
             <div className="p-4 border-b border-white/10 sticky top-0 bg-zinc-900 z-10 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h2 className="font-bold text-white">Daftar Episode</h2>
+                <h2 className="font-bold text-white">에피소드 목록</h2>
                 <span className="text-xs text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
-                  Total {totalEpisodes}
+                  총 {totalEpisodes}개
                 </span>
               </div>
               <button
