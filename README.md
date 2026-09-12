@@ -15,7 +15,7 @@ DramaBox, GoodShort 등의 숏드라마(세로형 드라마) 콘텐츠를 한 �
 - [Next.js](https://nextjs.org/) 16 (App Router, Turbopack)
 - TypeScript, Tailwind CSS
 - [TanStack Query](https://tanstack.com/query) (React Query) — 데이터 페칭/캐싱
-- [@vercel/postgres](https://vercel.com/docs/storage/vercel-postgres) — 회원/광고 설정 DB (Vercel Postgres 또는 Neon 등 호환 Postgres)
+- [pg (node-postgres)](https://node-postgres.com/) — 회원/광고 설정 DB. 표준 Postgres 연결 문자열이면 로컬 Postgres, Docker, Vercel Postgres, Neon 등 어디든 연결 가능
 - `bcryptjs` (비밀번호 해시), `jose` (JWT 세션)
 
 ## 시작하기
@@ -45,7 +45,7 @@ cp .env.example .env
 |---|---|
 | `NEXT_PUBLIC_API_BASE_URL` | 드라마 콘텐츠 API 베이스 URL 기본값 그대로 사용 |
 | `NEXT_PUBLIC_CRYPTO_SECRET` | API 응답 복호화용 키. 기본값 그대로 사용 |
-| `POSTGRES_URL` | 회원가입/로그인/광고 관리 기능에 필요. Vercel Postgres를 연결하면 자동 주입됨 (로컬 개발 시에만 직접 입력) |
+| `POSTGRES_URL` | 회원가입/로그인/광고 관리 기능에 필요. 표준 Postgres 연결 문자열 (로컬/Docker/Vercel Postgres/Neon 등 모두 가능). 예: `postgres://postgres:비밀번호@localhost:5433/postgres` |
 | `JWT_SECRET` | 로그인 세션(JWT) 서명용 비밀키. `openssl rand -base64 32`로 생성 |
 | `ADMIN_USERNAME` / `ADMIN_EMAIL` / `ADMIN_PASSWORD` | 최초 관리자 계정 생성(seed) 시에만 사용. 실행 후 값 삭제 권장 |
 
@@ -74,7 +74,13 @@ npm run dev
 
 ### 1. 데이터베이스 연결
 
-Vercel 대시보드에서 프로젝트에 **Vercel Postgres**(또는 Neon 등 호환 Postgres)를 연결하면 `POSTGRES_URL`이 자동으로 주입됩니다. 로컬 개발 시에는 해당 값을 `.env`에 직접 복사해 넣으세요.
+표준 `pg` 드라이버를 사용하므로 아무 Postgres에나 연결할 수 있습니다.
+
+- **로컬/Docker Postgres**: pgAdmin 등으로 확인한 접속 정보를 조합해 `.env`의 `POSTGRES_URL`에 넣으세요. 예: 호스트 `localhost`, 포트 `5433`, 사용자 `postgres`, DB `postgres`라면
+  ```
+  POSTGRES_URL=postgres://postgres:비밀번호@localhost:5433/postgres
+  ```
+- **Vercel Postgres / Neon 등 원격 DB**: Vercel 대시보드에서 프로젝트에 연결하면 `POSTGRES_URL`이 자동 주입됩니다. 로컬 개발 시에는 해당 값을 `.env`에 직접 복사해 넣으세요.
 
 ### 2. 스키마 마이그레이션
 
