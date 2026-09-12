@@ -31,10 +31,10 @@ VALUES (
   'qris_popup',
   '{
     "enabled": true,
-    "title": "Dukung Penambahan Platform Drama Lain!",
-    "description": "Donasi kamu sangat berarti untuk menambah platform drama lain dan membayar tagihan bulanan https://drama.sansekai.my.id (SekaiDrama) agar tetap aktif.",
+    "title": "다른 플랫폼 추가를 응원해주세요!",
+    "description": "여러분의 후원은 다른 드라마 플랫폼을 추가하고 서버 운영비를 유지하는 데 큰 힘이 됩니다.",
     "imageUrl": "/qris.jpg",
-    "footnote": "Yuk, dukung kami dengan scan QRIS di atas!",
+    "footnote": "위 QR코드를 스캔해서 후원해주세요!",
     "countdownSeconds": 10
   }'::jsonb
 )

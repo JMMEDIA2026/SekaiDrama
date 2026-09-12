@@ -22,11 +22,11 @@ export default function GoodShortDetailPage() {
   if (error || !data?.book) {
     return (
       <div className="min-h-screen pt-24 px-4">
-        <UnifiedErrorDisplay 
-          title="Drama tidak ditemukan"
-          message="Tidak dapat memuat detail drama. Silakan coba lagi."
+        <UnifiedErrorDisplay
+          title="드라마를 찾을 수 없습니다"
+          message="드라마 상세 정보를 불러올 수 없습니다. 다시 시도해주세요."
           onRetry={() => router.push('/')}
-          retryLabel="Kembali ke Beranda"
+          retryLabel="홈으로 돌아가기"
         />
       </div>
     );
@@ -56,7 +56,7 @@ export default function GoodShortDetailPage() {
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span>Kembali</span>
+            <span>뒤로</span>
           </button>
 
           <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8">
@@ -74,7 +74,7 @@ export default function GoodShortDetailPage() {
                   className="px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg"
                 >
                   <Play className="w-5 h-5 fill-current" />
-                  Tonton Sekarang
+                  지금 보기
                 </Link>
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function GoodShortDetailPage() {
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                    <div className="flex items-center gap-1.5">
                     <Play className="w-4 h-4" />
-                    <span>{book.chapterCount} Episode</span>
+                    <span>전체 {book.chapterCount}화</span>
                   </div>
                 </div>
 
@@ -107,7 +107,7 @@ export default function GoodShortDetailPage() {
 
                {/* Description */}
                <div className="glass rounded-xl p-4">
-                <h3 className="font-semibold text-foreground mb-2">Sinopsis</h3>
+                <h3 className="font-semibold text-foreground mb-2">줄거리</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   {book.introduction}
                 </p>
@@ -120,7 +120,7 @@ export default function GoodShortDetailPage() {
                 style={{ background: "var(--gradient-primary)" }}
               >
                 <Play className="w-5 h-5 fill-current" />
-                Mulai Menonton
+                시청 시작
               </Link>
               
             </div>
